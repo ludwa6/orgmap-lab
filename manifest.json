@@ -1,8 +1,10 @@
 {
-  "_comment": "A deployment declares itself here. Absent this file the app is a workbench, which is the right default for a fresh clone.",
-  "mode": "view",
-  "defaultDataset": "vdl",
+  "_comment": "A deployment declares itself here. THIS one is the lab: a workbench holding both datasets. A per-organisation deployment would set mode to view and declare only its own dataset.",
+  "title": "OrgMap Lab",
+  "mode": "workbench",
+  "defaultDataset": "barlavento",
   "datasets": {
-    "vdl": { "label": "Vale da Lama (Holacracy)", "schemas": ["vdl-doublelink", "vdl-target"] }
+    "barlavento": { "label": "Barlavento community (14 orgs)", "schemas": ["barlavento-current", "barlavento-vocab"] },
+    "vdl":        { "label": "Vale da Lama (Holacracy)",       "schemas": ["vdl-target", "vdl-doublelink", "vdl-current"] }
   }
 }
