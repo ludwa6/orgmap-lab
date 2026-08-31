@@ -1,5 +1,11 @@
 # OrgMap Lab
 
+**Repo:** `ludwa6/orgmap-lab` — **private for now.** The renderer is destined to be open source;
+the repo also carries `data/vdl/*.csv`, which names real staff. Those names are already public at
+<https://valedalama.github.io/vdl-orgdev/> by a deliberate transparency decision, so going public
+breaks nothing — but publishing is one click and un-publishing is not, so the default is closed until
+that is a decision rather than a side effect.
+
 A local sandbox for prototyping org-map **views** and **controlled vocabularies** over two real
 datasets, without touching either project repo. Nothing here deploys anywhere.
 
