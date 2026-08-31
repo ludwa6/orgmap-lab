@@ -75,6 +75,9 @@
   body.panels-off .pane{display:none!important}
   body.panels-off #split{display:none}
   body.controls-off aside{display:none}
+  /* read-only: the drawer and its handle are removed, so the map is the page */
+  body.read-only #stage{height:100%}
+  body.read-only .tabtools{display:none}
   .tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex:0 0 auto;align-items:center}
   .tab{padding:.5rem .9rem;cursor:pointer;color:var(--dim);border-bottom:2px solid transparent;
        font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
@@ -197,7 +200,7 @@
     <label class="toggle"><input type="checkbox" id="showMutual" checked> thicken mutual pairs</label>
     <h2>This view</h2> <div id="stats"></div>
     <h2>Shortcuts</h2>
-    <div style="color:var(--dim);line-height:1.7">
+    <div style="color:var(--dim);line-height:1.7" id="shortcutList">
       <b style="color:var(--muted)">m</b> map only ·
       <b style="color:var(--muted)">p</b> panels ·
       <b style="color:var(--muted)">c</b> controls<br>
@@ -246,6 +249,15 @@ const EDGE_COLS = ["subject","predicate","object","via","confirmed","source","no
 /* ------------------------------------------------------------------- state */
 let schema = null, data = { nodes: [], edges: [] }, dsId = "barlavento", scId = "barlavento-current";
 let visible = {}, sim = null, issues = [];
+let DATASET_DEFS = DATASETS;   // replaced by manifest.datasets when one exists
+
+// ── The cut between the two products. A published map is for reading; the
+// workbench is for shaping. Same file, and the mode decides which one you get.
+//   ?mode=view       force the read-only map
+//   ?mode=workbench  force the editor
+//   neither          the deployment's default, from manifest.json, else workbench
+const modeParam = new URLSearchParams(location.search).get("mode");
+let READ_ONLY = modeParam === "view";
 let lastProjection = { nodes: [], links: [] };   // what is currently on screen
 let lastSel = { node: null, link: null };        // d3 selections, for focus dimming
 
@@ -293,7 +305,7 @@ function cacheUsable(d){
 }
 
 async function loadDataset(ds, forceSeed){
-  if (!forceSeed){
+  if (!forceSeed && !READ_ONLY){
     const cached = localStorage.getItem(storeKey(ds));
     if (cached){
       try {
@@ -308,10 +320,15 @@ async function loadDataset(ds, forceSeed){
     fetch("data/" + ds + "/edges.csv", { cache: "no-store" }).then(r => r.text())
   ]);
   const fresh = { nodes: parseCSV(n), edges: parseCSV(e) };
-  localStorage.setItem(storeKey(ds), JSON.stringify(fresh));
+  if (!READ_ONLY) localStorage.setItem(storeKey(ds), JSON.stringify(fresh));
   return fresh;
 }
-const persist = () => localStorage.setItem(storeKey(dsId), JSON.stringify(data));
+// In read-only mode this is the whole story: the app never writes. Not disabled
+// buttons — no write path at all, so a published map cannot accumulate state.
+const persist = () => {
+  if (READ_ONLY) return;
+  localStorage.setItem(storeKey(dsId), JSON.stringify(data));
+};
 const loadSchema = id =>
   fetch("schemas/" + id + ".json", { cache: "no-store" }).then(r => r.json());
 
@@ -1042,6 +1059,7 @@ function cellText(row, key){
 }
 
 function renderNodesPane(){
+  if (READ_ONLY) return;
   const attrs = schema.attributes;
   const head = ["id", "name", "type"].concat(attrs.map(a => a.label));
   const rows = data.nodes.map((n, i) => {
@@ -1061,6 +1079,7 @@ function renderNodesPane(){
 }
 
 function renderEdgesPane(){
+  if (READ_ONLY) return;
   // Enforcement by construction: only edge-kind predicates are selectable. Attribute-kind
   // predicates are listed but disabled — an existing row keeps showing what it says, and no
   // new row can record co-location as a line, because the option cannot be chosen.
@@ -1095,6 +1114,7 @@ function wire(paneId, arr){
 }
 
 function renderValPane(){
+  if (READ_ONLY) return;
   issues = validate();
   const errs = issues.filter(i => i.lvl === "err").length;
   const badge = document.getElementById("vcount");
@@ -1128,9 +1148,38 @@ async function useDataset(id, forceSeed){
   data = await loadDataset(id, forceSeed);
   const sel = document.getElementById("sc");
   sel.innerHTML = "";
-  const list = await Promise.all(DATASETS[id].schemas.map(loadSchema));
+  const list = await Promise.all(DATASET_DEFS[id].schemas.map(loadSchema));
   list.forEach(s => sel.add(new Option(s.label, s.id)));
-  await useSchema(DATASETS[id].schemas[0]);
+  await useSchema(DATASET_DEFS[id].schemas[0]);
+}
+
+// A deployment declares its own mode and (later) its own datasets. Absent a
+// manifest the app is a workbench, which is the right default for a clone.
+async function loadManifest(){
+  try {
+    const r = await fetch("manifest.json", { cache: "no-store" });
+    if (r.ok) return await r.json();
+  } catch (e) {}
+  return {};
+}
+
+function applyMode(){
+  document.body.classList.toggle("read-only", READ_ONLY);
+  if (!READ_ONLY) return;
+  // remove, don't hide: a control that is not in the DOM cannot be reached
+  ["reseed", "expN", "expE", "addNode", "addEdge"].forEach(id => {
+    const el = document.getElementById(id); if (el) el.remove();
+  });
+  const drawer = document.getElementById("drawer"); if (drawer) drawer.remove();
+  const sc = document.getElementById("shortcutList");
+  if (sc) sc.innerHTML =
+    '<b style="color:var(--muted)">m</b> map only &middot; ' +
+    '<b style="color:var(--muted)">c</b> controls<br>' +
+    '<b style="color:var(--muted)">f</b> fullscreen &middot; ' +
+    '<b style="color:var(--muted)">esc</b> bring it all back<br>' +
+    '<b style="color:var(--muted)">g</b> field guide<br>' +
+    'hover to glance, <b style="color:var(--muted)">click</b> for the full record';
+  const split = document.getElementById("split"); if (split) split.remove();
 }
 
 document.getElementById("ds").onchange = e => useDataset(e.target.value);
@@ -1155,6 +1204,7 @@ document.getElementById("addEdge").onclick = () => {
   document.querySelector('[data-pane="pEdges"]').click(); touched();
 };
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  if (READ_ONLY) return;
   // clicking a tab while the panels are hidden brings them back to that tab
   if (document.body.classList.contains("panels-off")) setPanels(true);
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === t));
@@ -1186,9 +1236,15 @@ window.addEventListener("resize", recentreSoon);
 new ResizeObserver(recentreSoon).observe(document.getElementById("graphwrap"));
 
 const VIEW = "orgmap-lab:view";
-const viewState = Object.assign({ panels: true, controls: true, drawerH: null },
-  JSON.parse(localStorage.getItem(VIEW) || "{}"));
-const saveView = () => localStorage.setItem(VIEW, JSON.stringify(viewState));
+const viewState = { panels: true, controls: true, drawerH: null };
+function loadViewState(){
+  if (READ_ONLY) return;                       // a published map remembers nothing
+  try { Object.assign(viewState, JSON.parse(localStorage.getItem(VIEW) || "{}")); } catch (e) {}
+}
+const saveView = () => {
+  if (READ_ONLY) return;
+  localStorage.setItem(VIEW, JSON.stringify(viewState));
+};
 
 function setPanels(on){
   viewState.panels = on; saveView();
@@ -1248,12 +1304,20 @@ document.addEventListener("keydown", e => {
   }
 });
 
-setPanels(viewState.panels); setControls(viewState.controls);
 
 (async () => {
+  const manifest = await loadManifest();
+  READ_ONLY = modeParam ? modeParam === "view" : manifest.mode === "view";
+  applyMode();
+  loadViewState();
+  setPanels(viewState.panels); setControls(viewState.controls);
+
   const sel = document.getElementById("ds");
-  Object.keys(DATASETS).forEach(k => sel.add(new Option(DATASETS[k].label, k)));
-  await useDataset("barlavento");
+  const sets = manifest.datasets || DATASETS;
+  DATASET_DEFS = sets;
+  Object.keys(sets).forEach(k => sel.add(new Option(sets[k].label, k)));
+  if (Object.keys(sets).length < 2) sel.parentElement.style.display = "none";
+  await useDataset(manifest.defaultDataset || Object.keys(sets)[0]);
 })();
 </script>
 </body>

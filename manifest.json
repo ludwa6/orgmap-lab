@@ -1,0 +1,8 @@
+{
+  "_comment": "A deployment declares itself here. Absent this file the app is a workbench, which is the right default for a fresh clone.",
+  "mode": "view",
+  "defaultDataset": "vdl",
+  "datasets": {
+    "vdl": { "label": "Vale da Lama (Holacracy)", "schemas": ["vdl-doublelink", "vdl-target"] }
+  }
+}
