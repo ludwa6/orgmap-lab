@@ -62,7 +62,7 @@
   svg{display:block;width:100%;height:100%}
   .nlabel{font-size:11px;font-weight:600;fill:var(--text);pointer-events:none}
   .nsub{font-size:9px;fill:var(--dim);pointer-events:none}
-  .bead-face{font-size:9px;font-weight:700;fill:#0a0f1a;pointer-events:none;letter-spacing:.02em}
+  .bead-face{font-size:11px;font-weight:700;pointer-events:none;letter-spacing:.03em}
   .bead-badge{font-size:8px;font-weight:700;fill:var(--warn);pointer-events:none}
 
   #split{flex:0 0 auto;height:7px;cursor:row-resize;background:var(--border);
@@ -520,7 +520,31 @@ function hideTip(){ tipEl.classList.remove("on"); tipEl.setAttribute("aria-hidde
 const enc = v => String(v == null ? "" : v)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+// Set by render() so the generic tooltip can speak about a bead.
+let beadInfo = null;
+
+function beadTip(d){
+  const b = beadInfo, st = b.state(d), who = b.holder(d), c = b.chan(d);
+  const chip = st === "active"  ? '<span class="chip ok">ratified ' + enc(d[b.ratField]) + "</span>"
+             : st === "pending" ? '<span class="chip warn">no ratification on record</span>'
+             : st === "vacant"  ? '<span class="chip warn">seat empty</span>'
+             :                    '<span class="chip warn">no role record &mdash; never created</span>';
+  return '<div class="t-head">' + enc(who ? (who.fullName || who.name) : d.roleType) + "</div>" +
+    '<div class="t-pred">' + enc(d.roleType) +
+      (c ? " &middot; " + enc(c.child.name) : "") + "</div>" +
+    (who && (who.fullName || who.name) !== d.roleType
+      ? '<dl><dt>role</dt><dd>' + enc(d.roleType) + "</dd>" +
+        (c ? "<dt>circle</dt><dd>" + enc(c.child.name) + "</dd><dt>links to</dt><dd>" +
+             enc(c.parent.name) + "</dd>" : "") +
+        (d[b.reviewField] ? "<dt>review due</dt><dd>" + enc(d[b.reviewField]) + "</dd>" : "") + "</dl>"
+      : (c ? '<dl><dt>circle</dt><dd>' + enc(c.child.name) + "</dd><dt>links to</dt><dd>" +
+             enc(c.parent.name) + "</dd></dl>" : "")) +
+    '<div class="chips">' + chip + "</div>" +
+    '<div class="t-note">' + enc(b.arcLabel(d)) + "</div>";
+}
+
 function nodeTip(d){
+  if (beadInfo && beadInfo.isBead(d)) return beadTip(d);
   const rows = schema.attributes
     .filter(a => d[a.key])
     .map(a => "<dt>" + enc(a.label) + "</dt><dd>" + enc(d[a.key]) + "</dd>").join("");
@@ -688,7 +712,7 @@ function render(keepPositions){
   const colorOf = n => arcColour.has(n.id) ? arcColour.get(n.id)
     : colorKey === "__type" ? ((typeOf(n.nodeType) || {}).color || "#5a6a8c")
     : scale(n[colorKey]);
-  const radiusOf = n => rideIds.has(n.id) ? 11 : ((typeOf(n.nodeType) || {}).r || 18);
+  const radiusOf = n => rideIds.has(n.id) ? 14 : ((typeOf(n.nodeType) || {}).r || 18);
   const markerId = pid => "arw-" + pid.replace(/[^a-zA-Z0-9]/g, "");
 
   if (sim) sim.stop();
@@ -770,6 +794,15 @@ function render(keepPositions){
   const initials = (nm) => (nm || "?").split(/\s+/).filter(Boolean)
     .slice(0, 2).map(w => w[0].toUpperCase()).join("");
 
+  beadInfo = {
+    isBead: (n) => rideIds.has(n.id),
+    state: beadState,
+    holder: (n) => holderOf.get(n.id),
+    chan: (n) => chans.find(c => c.role.id === n.id),
+    arcLabel: (n) => { const c = chans.find(x => x.role.id === n.id); return c ? c.spec.label : ""; },
+    ratField, reviewField: "reviewDate",
+  };
+
   const thicken = document.getElementById("showMutual").checked;
   const link = g.append("g").selectAll("line").data(links).join("line")
     .attr("stroke", d => predOf(d.predicate).style.color)
@@ -818,21 +851,25 @@ function render(keepPositions){
 
   // the bead carries the person: initials now, a photo when one exists
   const beads = node.filter(d => rideIds.has(d.id));
+  beads.append("circle").attr("r", d => radiusOf(d) + 5)
+    .attr("fill", "transparent").attr("pointer-events", "all");
   beads.each(function (d) {
     const el = d3.select(this), st = beadState(d), who = holderOf.get(d.id);
     if (st === "active" || st === "pending") {
       el.append("text").attr("class", "bead-face").attr("text-anchor", "middle")
-        .attr("dy", 3.4).text(initials(who && (who.fullName || who.name)));
+        .attr("dy", 4).attr("fill", st === "active" ? "#0a0f1a" : "#e8edf5")
+        .text(initials(who && (who.fullName || who.name)));
       if (st === "pending") {                      // held, but governance has no record
-        el.append("circle").attr("cx", 8).attr("cy", -8).attr("r", 5.4)
+        el.append("circle").attr("cx", 10).attr("cy", -10).attr("r", 6)
           .attr("fill", "#0a0f1a").attr("stroke", "#f5a623").attr("stroke-width", 1.2);
         el.append("text").attr("class", "bead-badge").attr("text-anchor", "middle")
-          .attr("x", 8).attr("y", -5.4).text("?");
+          .attr("x", 10).attr("y", -7).text("?");
       }
     } else {
       el.append("text").attr("class", "bead-face")
-        .attr("text-anchor", "middle").attr("dy", 3.8)
-        .attr("fill-opacity", st === "absent" ? .5 : .95).text("?");
+        .attr("text-anchor", "middle").attr("dy", 4.5)
+        .attr("fill", colorOf(d)).attr("fill-opacity", st === "absent" ? .75 : 1)
+        .style("font-size", "13px").text("?");
     }
   });
 
