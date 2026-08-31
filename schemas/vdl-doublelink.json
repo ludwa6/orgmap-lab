@@ -204,5 +204,22 @@
   "defaultVisible": [
     "subcircle"
   ],
-  "focusChannel": true
+  "focusChannel": true,
+  "beads": {
+    "ratifiedField": "ratifiedOn",
+    "states": {
+      "active": {
+        "label": "Ratified — governance has confirmed the holder"
+      },
+      "pending": {
+        "label": "Held, but no ratification on record"
+      },
+      "vacant": {
+        "label": "The seat exists and nobody is in it"
+      },
+      "absent": {
+        "label": "No such role record — the seat was never created"
+      }
+    }
+  }
 }

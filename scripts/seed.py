@@ -18,7 +18,7 @@ ERCB = os.path.expanduser("~/dev/ercb-orgmap/index.html")
 VDL  = os.path.expanduser("~/dev/vdl-orgdev/graph.json")
 
 NODE_COLS = ["id", "name", "nodeType", "region", "membership", "roleType",
-             "status", "website", "themes", "purpose"]
+             "ratifiedOn", "reviewDate", "fullName", "status", "website", "themes", "purpose"]
 EDGE_COLS = ["subject", "predicate", "object", "via", "confirmed", "source", "note"]
 
 AFFILIATION = "https://schema.org/affiliation"
@@ -103,8 +103,10 @@ def seed_vdl():
     g = json.load(open(VDL, encoding="utf-8"))
     nodes = [{
         "id": n["id"], "name": n.get("name", n["id"]), "nodeType": n.get("nodeType", ""),
+        "fullName": n.get("fullName", ""),
         "status": n.get("status", ""), "purpose": n.get("purpose", ""),
         "roleType": n.get("roleType", ""),
+        "ratifiedOn": n.get("ratifiedOn", ""), "reviewDate": n.get("reviewDate", ""),
     } for n in g["nodes"]]
     edges = [{
         "subject": e["source"], "predicate": e["type"], "object": e["target"], "via": "",

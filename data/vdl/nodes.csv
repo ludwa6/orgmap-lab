@@ -1,52 +1,52 @@
-id,name,nodeType,region,membership,roleType,status,website,themes,purpose
-circle-0,Groups & Retreats,circle,,,,Active,,,"To host groups and retreats in a coherent, respectful, and regenerative way, offering integrated experiences that align accommodation, food, activities, and land stewardship."
-circle-1,Activities,circle,,,,Active,,,"To design and host learning, wellbeing, and creative activities that support connection with self, others, and the land, using Vale da Lama's spaces as living classrooms."
-circle-2,B&B Accommodations,circle,,,,Active,,,"To provide welcoming, comfortable, and regenerative accommodation that allows guests to rest, reconnect, and feel at home within the living ecosystem of Vale da Lama."
-circle-3,Restaurant,circle,,,,Active,,,"To offer nourishing, seasonal food experiences rooted in the farm's production, embodying the Farm → Fork → Farm cycle, where food supports human health, local economy, and soil regeneration."
-circle-4,OMG: Organic Market Garden,circle,,,,Active,,,Everything you need to be well-nourished
-circle-5,HFC: Holistic Farm Care,circle,,,,Active,,,"Living Soil, growing ever-more abundant"
-circle-6,VdL Farm,circle,,,,Active,,,A holarchy of richly interconnected entities
-circle-7,Farm Ops,circle,,,,Active,,,Regenerative Organic Agriculture
-circle-8,Casa Ops,circle,,,,Active,,,Comfort Rooted in Nature
-role-0,Facilitator,role,,,Facilitator,Active,,,Facilitates the Farm Ops Circle's governance and tactical meetings.
-role-1,Facilities Maintenance,role,,,Defined Role,Active,,,Physical Structures & Infrastructures all in good state of repair
-role-2,Secretary,role,,,Secretary,Active,,,Maintains governance records for the Farm Ops Circle
-role-3,Circle Rep,role,,,Circle Rep,Active,,,Brings tensions from OMG to Farm Ops
-role-4,Circle Lead,role,,,Circle Lead,Active,,,Everything you need to be well-nourished
-role-5,Circle Rep,role,,,Circle Rep,Active,,,
-role-6,Circle Lead,role,,,Circle Lead,Active,,,
-role-7,Secretary,role,,,Secretary,Vacant,,,Maintains governance records for the B&B sub-circle
-role-8,Circle Rep,role,,,Circle Rep,Vacant,,,Brings tensions from B&B to Casa Ops
-role-9,Secretary,role,,,Secretary,Vacant,,,Maintains governance records for the Activities sub-circle
-role-10,Secretary,role,,,Secretary,Vacant,,,Maintains governance records for the Groups & Retreats sub-circle
-role-11,Circle Rep,role,,,Circle Rep,Vacant,,,Brings tensions from Groups & Retreats to Casa Ops
-role-12,Secretary,role,,,Secretary,Vacant,,,Maintains governance records for the Restaurant sub-circle
-role-13,Circle Rep,role,,,Circle Rep,Vacant,,,Brings tensions from the Restaurant to Casa Ops
-role-14,Circle Rep,role,,,Circle Rep,Vacant,,,Brings tensions from Activities to Casa Ops
-role-15,Circle Lead,role,,,Circle Lead,Vacant,,,"Holds the purpose of the Activities sub-circle, sets priorities for activities and space use, allocates roles and resources"
-role-16,Circle Lead,role,,,Circle Lead,Vacant,,,"Holds the purpose of the Restaurant sub-circle, sets priorities and focus, allocates roles and resources within the sub-circle"
-role-17,SilviCulture,role,,,Defined Role,Active,,,Healthy & Fruitful trees
-role-18,Water Guardian,role,,,Defined Role,Active,,,
-role-19,Circle Rep,role,,,Circle Rep,Vacant,,,
-role-20,Circle Lead,role,,,Circle Lead,Active,,,
-role-21,Circle Rep,role,,,Circle Rep,Active,,,
-role-22,Circle Lead,role,,,Circle Lead,Active,,,
-role-23,Marketing,role,,,Defined Role,Vacant,,,Manage marketing plan
-role-24,Accounting,role,,,Defined Role,Active,,,"Company accounts kept current, accurate & transparent"
-role-25,Landscape Design,role,,,Defined Role,Active,,,"All landplots of farm as beautiful as they are functional:  Ecologically, Economically & Socially"
-role-26,Kitchen Design,role,,,Defined Role,Active,,,An open-concept kitchen that pleases both kitchen workers and dining guests
-role-27,Finance,role,,,Defined Role,Active,,,Manage cashflow
-person-0,Miguel,person,,,,Active,,,
-person-1,António,person,,,,Active,,,
-person-2,Ana,person,,,,Active,,,
-person-3,Pedro,person,,,,Active,,,
-person-4,Charlotte,person,,,,Active,,,
-person-5,Luis,person,,,,Active,,,
-person-6,Henrico,person,,,,Active,,,
-person-7,Anna,person,,,,Active,,,
-person-8,Hugo,person,,,,Active,,,
-person-9,Ricardo,person,,,,Active,,,
-person-10,Eunice,person,,,,Active,,,
-person-11,Catarina,person,,,,Active,,,
-person-12,Nita,person,,,,Active,,,
-person-13,Walt,person,,,,Active,,,
+id,name,nodeType,region,membership,roleType,ratifiedOn,reviewDate,fullName,status,website,themes,purpose
+circle-0,Groups & Retreats,circle,,,,,,Groups & Retreats,Active,,,"To host groups and retreats in a coherent, respectful, and regenerative way, offering integrated experiences that align accommodation, food, activities, and land stewardship."
+circle-1,Activities,circle,,,,,,Activities,Active,,,"To design and host learning, wellbeing, and creative activities that support connection with self, others, and the land, using Vale da Lama's spaces as living classrooms."
+circle-2,B&B Accommodations,circle,,,,,,B&B Accommodations,Active,,,"To provide welcoming, comfortable, and regenerative accommodation that allows guests to rest, reconnect, and feel at home within the living ecosystem of Vale da Lama."
+circle-3,Restaurant,circle,,,,,,Restaurant,Active,,,"To offer nourishing, seasonal food experiences rooted in the farm's production, embodying the Farm → Fork → Farm cycle, where food supports human health, local economy, and soil regeneration."
+circle-4,OMG: Organic Market Garden,circle,,,,,,OMG: Organic Market Garden,Active,,,Everything you need to be well-nourished
+circle-5,HFC: Holistic Farm Care,circle,,,,,,HFC: Holistic Farm Care,Active,,,"Living Soil, growing ever-more abundant"
+circle-6,VdL Farm,circle,,,,,,VdL Farm,Active,,,A holarchy of richly interconnected entities
+circle-7,Farm Ops,circle,,,,,,Farm Ops,Active,,,Regenerative Organic Agriculture
+circle-8,Casa Ops,circle,,,,,,Casa Ops,Active,,,Comfort Rooted in Nature
+role-0,Facilitator,role,,,Facilitator,,,Facilitator: Farm Ops,Active,,,Facilitates the Farm Ops Circle's governance and tactical meetings.
+role-1,Facilities Maintenance,role,,,Defined Role,,,Facilities Maintenance,Active,,,Physical Structures & Infrastructures all in good state of repair
+role-2,Secretary,role,,,Secretary,,,Secretary: Farm Ops,Active,,,Maintains governance records for the Farm Ops Circle
+role-3,Circle Rep,role,,,Circle Rep,,,circleRep: OMG: Organic Market Garden,Active,,,Brings tensions from OMG to Farm Ops
+role-4,Circle Lead,role,,,Circle Lead,,,circleLead: OMG: Organic Market Garden,Active,,,Everything you need to be well-nourished
+role-5,Circle Rep,role,,,Circle Rep,,,circleRep: VdL Farm,Active,,,
+role-6,Circle Lead,role,,,Circle Lead,,,circleLead: VdL Farm,Active,,,
+role-7,Secretary,role,,,Secretary,,,Secretary — B&B Accommodations,Vacant,,,Maintains governance records for the B&B sub-circle
+role-8,Circle Rep,role,,,Circle Rep,,,circleRep: B&B Accommodations,Vacant,,,Brings tensions from B&B to Casa Ops
+role-9,Secretary,role,,,Secretary,,,Secretary — Activities,Vacant,,,Maintains governance records for the Activities sub-circle
+role-10,Secretary,role,,,Secretary,,,Secretary — Groups & Retreats,Vacant,,,Maintains governance records for the Groups & Retreats sub-circle
+role-11,Circle Rep,role,,,Circle Rep,,,circleRep: Groups & Retreats,Vacant,,,Brings tensions from Groups & Retreats to Casa Ops
+role-12,Secretary,role,,,Secretary,,,Secretary — Restaurant,Vacant,,,Maintains governance records for the Restaurant sub-circle
+role-13,Circle Rep,role,,,Circle Rep,,,circleRep: Restaurant,Vacant,,,Brings tensions from the Restaurant to Casa Ops
+role-14,Circle Rep,role,,,Circle Rep,,,circleRep: Activities,Vacant,,,Brings tensions from Activities to Casa Ops
+role-15,Circle Lead,role,,,Circle Lead,,,circleLead: Activities,Vacant,,,"Holds the purpose of the Activities sub-circle, sets priorities for activities and space use, allocates roles and resources"
+role-16,Circle Lead,role,,,Circle Lead,,,circleLead: Restaurant,Vacant,,,"Holds the purpose of the Restaurant sub-circle, sets priorities and focus, allocates roles and resources within the sub-circle"
+role-17,SilviCulture,role,,,Defined Role,,,SilviCulture,Active,,,Healthy & Fruitful trees
+role-18,Water Guardian,role,,,Defined Role,,,Water Guardian,Active,,,
+role-19,Circle Rep,role,,,Circle Rep,,,circleRep: Farm Ops,Vacant,,,
+role-20,Circle Lead,role,,,Circle Lead,,,circleLead: Farm Ops,Active,,,
+role-21,Circle Rep,role,,,Circle Rep,,,circleRep: Casa Ops,Active,,,
+role-22,Circle Lead,role,,,Circle Lead,,,circleLead: Casa Ops,Active,,,
+role-23,Marketing,role,,,Defined Role,,,Marketing,Vacant,,,Manage marketing plan
+role-24,Accounting,role,,,Defined Role,,,Accounting,Active,,,"Company accounts kept current, accurate & transparent"
+role-25,Landscape Design,role,,,Defined Role,,,Landscape Design,Active,,,"All landplots of farm as beautiful as they are functional:  Ecologically, Economically & Socially"
+role-26,Kitchen Design,role,,,Defined Role,,,Kitchen Design,Active,,,An open-concept kitchen that pleases both kitchen workers and dining guests
+role-27,Finance,role,,,Defined Role,,,Finance,Active,,,Manage cashflow
+person-0,Miguel,person,,,,,,Miguel,Active,,,
+person-1,António,person,,,,,,António,Active,,,
+person-2,Ana,person,,,,,,Ana Maria,Active,,,
+person-3,Pedro,person,,,,,,Chef Pedro,Active,,,
+person-4,Charlotte,person,,,,,,Charlotte,Active,,,
+person-5,Luis,person,,,,,,Luis Silva,Active,,,
+person-6,Henrico,person,,,,,,Henrico Sousa,Active,,,
+person-7,Anna,person,,,,,,Anna Pelegrim,Active,,,
+person-8,Hugo,person,,,,,,Hugo Barbosa,Active,,,
+person-9,Ricardo,person,,,,,,Ricardo Gomes,Active,,,
+person-10,Eunice,person,,,,,,Eunice,Active,,,
+person-11,Catarina,person,,,,,,Catarina Shepherd,Active,,,
+person-12,Nita,person,,,,,,Nita Barroca,Active,,,
+person-13,Walt,person,,,,,,Walt Ludwick,Active,,,
