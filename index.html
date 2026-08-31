@@ -952,6 +952,8 @@ function render(keepPositions){
     });
   if (keepPositions) sim.alpha(.25);
 
+  pruneDeadControls(proj);
+
   const top = nodes.slice().sort((a, b) => b.deg - a.deg)[0];
   document.getElementById("stats").innerHTML = [
     ["rows in file",      data.edges.length],
@@ -965,6 +967,36 @@ function render(keepPositions){
     ["broken channels",   proj.channels.filter(c => c.vacant).length]
   ] : []).concat([]
   ).map(r => '<div class="stat"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>').join("");
+}
+
+/* A control that cannot change anything is worse than none: it invites a click
+   and teaches that the app is broken. Beads are locked to their arc's colour on
+   purpose — a bead reads as part of the channel it rides — so they can never
+   answer to "colour by", and on a channel-focused view only the circles are left
+   to colour. Hide an option unless it would actually produce more than one. */
+function pruneDeadControls(proj){
+  const beadIds = new Set((proj.channels || []).map(c => c.role.id));
+  const shown = proj.nodes.filter(n => !beadIds.has(n.id));
+  const varies = (key) =>
+    new Set(shown.map(n => key === "__type" ? n.nodeType : n[key]).filter(Boolean)).size > 1;
+
+  const show = (sel, keep, fallback) => {
+    const cur = sel.value;
+    Array.from(sel.options).forEach(o => {
+      const live = keep(o.value);
+      o.hidden = !live; o.disabled = !live;
+    });
+    const live = Array.from(sel.options).filter(o => !o.hidden);
+    if (!live.some(o => o.value === cur)) sel.value = (live[0] || {}).value || fallback;
+    const dead = live.length < 2;
+    sel.style.display = dead ? "none" : "";
+    const label = sel.previousElementSibling;          // the <h2> above it
+    if (label && label.tagName === "H2") label.style.display = dead ? "none" : "";
+    return !dead;
+  };
+
+  show(document.getElementById("colorBy"), v => varies(v), "__type");
+  show(document.getElementById("badgeBy"), v => v === "__none" || varies(v), "__none");
 }
 
 /* ------------------------------------------------------------------- panel */
