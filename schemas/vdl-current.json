@@ -1,0 +1,107 @@
+{
+  "id": "vdl-current",
+  "dataset": "vdl",
+  "label": "VdL — the collapsed model (retired 2026-08-30)",
+  "note": "What the map emitted until issue #2 shipped: people wired straight to circles, roles read from Notion and discarded. Kept as the mirror of the argument — point it at today's data and the OLD schema is the one that fails, which is what winning the argument looks like.",
+  "governs": {
+    "label": "valedalama/vdl-orgdev#2",
+    "url": "https://github.com/valedalama/vdl-orgdev/issues/2"
+  },
+  "nodeTypes": [
+    {
+      "id": "circle",
+      "label": "Circle",
+      "color": "#6366f1",
+      "r": 26
+    },
+    {
+      "id": "person",
+      "label": "Person",
+      "color": "#2dd4bf",
+      "r": 16
+    }
+  ],
+  "attributes": [
+    {
+      "key": "status",
+      "label": "Status",
+      "control": "enum-open",
+      "render": "color"
+    },
+    {
+      "key": "purpose",
+      "label": "Purpose",
+      "control": "text"
+    }
+  ],
+  "predicates": [
+    {
+      "id": "subcircle",
+      "label": "Sub-circle of",
+      "kind": "edge",
+      "subjectTypes": [
+        "circle"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#6366f1",
+        "width": 2.2,
+        "dash": null
+      }
+    },
+    {
+      "id": "leads",
+      "label": "Leads",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#f5a623",
+        "width": 2.4,
+        "dash": null
+      }
+    },
+    {
+      "id": "represents",
+      "label": "Represents",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#a855f7",
+        "width": 2.0,
+        "dash": "6,3"
+      }
+    },
+    {
+      "id": "energizes",
+      "label": "Energizes",
+      "kind": "edge",
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "circle"
+      ],
+      "directed": true,
+      "style": {
+        "color": "#8899bb",
+        "width": 1.4,
+        "dash": "2,4"
+      }
+    }
+  ]
+}

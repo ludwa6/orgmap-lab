@@ -1,0 +1,24 @@
+subject,predicate,object,via,confirmed,source,note
+corte-medronheira,https://barlavento-eco.github.io/predicates/shared-personnel/,jasmim,Ana Santos,true,curated,
+vale-da-lama,https://barlavento-eco.github.io/predicates/shared-personnel/,mud-valley,Walt Ludwick,true,curated,
+rnf,https://schema.org/affiliation,horizonte,,true,curated,RNF / Jeroen Boss
+rnf,https://schema.org/affiliation,zambujeira,,true,curated,RNF / Manuel Castro
+rnf,https://schema.org/affiliation,vinha-velha,,false,curated,Based at Vinha Velha? (confirm)
+mud-valley,https://schema.org/memberOf,vinha-velha,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,apv,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,rnf,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,corte-medronheira,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,machada,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,tres-figos,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,jasmim,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,zambujeira,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,horizonte,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,lagos-mais-verde,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,bravura,,true,curated,Network convener
+mud-valley,https://schema.org/memberOf,mata-viva,,true,curated,Network convener
+corte-medronheira,urn:barlavento:colocated,machada,,true,curated,Bensafrim
+machada,urn:barlavento:colocated,jasmim,,true,curated,Bensafrim
+vinha-velha,urn:barlavento:colocated,zambujeira,,true,curated,Barão de São João
+vinha-velha,urn:barlavento:colocated,mata-viva,,true,curated,Barão de São João
+zambujeira,urn:barlavento:colocated,mata-viva,,true,curated,Barão de São João
+lagos-mais-verde,urn:barlavento:colocated,bravura,,true,curated,Lagos area

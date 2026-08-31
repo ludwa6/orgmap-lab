@@ -1,0 +1,60 @@
+subject,predicate,object,via,confirmed,source,note
+circle-0,subcircle,circle-8,,true,notion,Sub-circle of
+circle-1,subcircle,circle-8,,true,notion,Sub-circle of
+circle-2,subcircle,circle-8,,true,notion,Sub-circle of
+circle-3,subcircle,circle-8,,true,notion,Sub-circle of
+circle-4,subcircle,circle-7,,true,notion,Sub-circle of
+circle-5,subcircle,circle-7,,true,notion,Sub-circle of
+circle-7,subcircle,circle-6,,true,notion,Sub-circle of
+circle-8,subcircle,circle-6,,true,notion,Sub-circle of
+role-0,holds,circle-7,,true,notion,Facilitator
+role-1,holds,circle-6,,true,notion,Defined Role
+role-2,holds,circle-7,,true,notion,Secretary
+role-3,holds,circle-4,,true,notion,Circle Rep
+role-4,holds,circle-4,,true,notion,Circle Lead
+role-5,holds,circle-6,,true,notion,Circle Rep
+role-6,holds,circle-6,,true,notion,Circle Lead
+role-7,holds,circle-2,,true,notion,Secretary
+role-8,holds,circle-2,,true,notion,Circle Rep
+role-9,holds,circle-1,,true,notion,Secretary
+role-10,holds,circle-0,,true,notion,Secretary
+role-11,holds,circle-0,,true,notion,Circle Rep
+role-12,holds,circle-3,,true,notion,Secretary
+role-13,holds,circle-3,,true,notion,Circle Rep
+role-14,holds,circle-1,,true,notion,Circle Rep
+role-15,holds,circle-1,,true,notion,Circle Lead
+role-16,holds,circle-3,,true,notion,Circle Lead
+role-17,holds,circle-5,,true,notion,Defined Role
+role-17,holds,circle-7,,true,notion,Defined Role
+role-18,holds,circle-7,,true,notion,Defined Role
+role-19,holds,circle-7,,true,notion,Circle Rep
+role-20,holds,circle-7,,true,notion,Circle Lead
+role-21,holds,circle-8,,true,notion,Circle Rep
+role-22,holds,circle-8,,true,notion,Circle Lead
+role-23,holds,circle-6,,true,notion,Defined Role
+role-24,holds,circle-6,,true,notion,Defined Role
+role-25,holds,circle-6,,true,notion,Defined Role
+role-26,holds,circle-8,,true,notion,Defined Role
+role-27,holds,circle-6,,true,notion,Defined Role
+person-0,energizes,role-25,,true,notion,Energizes
+person-1,energizes,role-1,,true,notion,Energizes
+person-2,energizes,role-8,,true,notion,Energizes
+person-3,energizes,role-16,,true,notion,Energizes
+person-4,energizes,role-23,,true,notion,Energizes
+person-5,energizes,role-17,,true,notion,Energizes
+person-5,energizes,role-0,,true,notion,Energizes
+person-6,energizes,role-18,,true,notion,Energizes
+person-6,energizes,role-4,,true,notion,Energizes
+person-7,energizes,role-3,,true,notion,Energizes
+person-7,energizes,role-2,,true,notion,Energizes
+person-9,energizes,role-20,,true,notion,Energizes
+person-10,energizes,role-21,,true,notion,Energizes
+person-11,energizes,role-22,,true,notion,Energizes
+person-12,energizes,role-26,,true,notion,Energizes
+person-12,energizes,role-24,,true,notion,Energizes
+person-12,energizes,role-5,,true,notion,Energizes
+person-13,energizes,role-27,,true,notion,Energizes
+person-13,energizes,role-6,,true,notion,Energizes
+person-8,member,circle-7,,true,notion,"Member, no role recorded"
+person-8,member,circle-4,,true,notion,"Member, no role recorded"
+person-9,member,circle-5,,true,notion,"Member, no role recorded"
