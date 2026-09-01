@@ -1,0 +1,136 @@
+# A consumer of the OrgMap renderer references this action instead of copying a
+# check into their repo. That is the same principle as the field guide fix one
+# commit earlier: a check people copy is itself a duplicated file that drifts,
+# which would be self-defeating.
+#
+#   - uses: ludwa6/orgmap-lab@master
+#     with:
+#       files: "index.html vendor/d3.min.js"
+#
+# Three lines and no files.
+name: OrgMap shared-file drift check
+description: Fail if this repository's copies of the OrgMap renderer, vendored d3 or schemas have drifted from ludwa6/orgmap-lab.
+author: ludwa6
+
+branding:
+  icon: git-branch
+  color: purple
+
+inputs:
+  files:
+    description: >-
+      Whitespace-separated shared files to verify, as paths relative to `path`.
+      Defaults to every file in the manifest, which is right only if this repo
+      copies all of them.
+    required: false
+    default: ""
+  path:
+    description: Directory holding the copies. Defaults to the workspace root.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Compare shared files against ludwa6/orgmap-lab
+      shell: bash
+      # Inputs arrive as environment variables rather than being interpolated
+      # into the script body: a ${{ }} expansion inside `run` is a shell
+      # injection waiting for a caller who writes something unusual in `files`.
+      env:
+        INPUT_FILES: ${{ inputs.files }}
+        INPUT_PATH: ${{ inputs.path }}
+        ACTION_REPO: ${{ github.action_repository }}
+        ACTION_REF: ${{ github.action_ref }}
+      run: |
+        set -uo pipefail
+
+        # GitHub has already cloned this repo to run the action, so the manifest
+        # is on disk beside action.yml. Reading it here rather than fetching it
+        # over HTTPS means no network call, and — the part that matters — the
+        # hashes are pinned to exactly the ref the caller wrote in `uses:`. A
+        # download would always resolve to the default branch, so a consumer
+        # pinned to a tag would be checked against hashes they never chose.
+        manifest="${GITHUB_ACTION_PATH}/SHARED.sha256"
+        upstream="${ACTION_REPO:-ludwa6/orgmap-lab}@${ACTION_REF:-master}"
+
+        if [ ! -f "$manifest" ]; then
+          echo "::error::SHARED.sha256 is missing from the action checkout ($manifest). This is a bug in ${upstream}, not in your repository."
+          exit 1
+        fi
+
+        hash_of() {
+          if command -v sha256sum >/dev/null 2>&1; then
+            sha256sum "$1" | cut -d' ' -f1
+          else
+            shasum -a 256 "$1" | cut -d' ' -f1
+          fi
+        }
+
+        # No `files` given means "we copy everything", which is true of a full
+        # fork and false of most deployments — hence the default being spelled
+        # out in the input description rather than silently convenient.
+        wanted="$(printf '%s' "${INPUT_FILES}" | tr '\n\t,' '   ')"
+        if [ -z "$(printf '%s' "$wanted" | tr -d '[:space:]')" ]; then
+          wanted="$(awk '{print $2}' "$manifest")"
+        fi
+
+        root="${INPUT_PATH:-.}"
+        drifted=0
+        checked=0
+
+        {
+          echo "### OrgMap shared-file drift check"
+          echo
+          echo "Compared against \`${upstream}\`."
+          echo
+          echo "| file | result |"
+          echo "| --- | --- |"
+        } >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+
+        for rel in $wanted; do
+          expected="$(awk -v p="$rel" '$2 == p { print $1 }' "$manifest")"
+
+          if [ -z "$expected" ]; then
+            echo "::error::'${rel}' is not a shared file of ${upstream}, so there is nothing to compare it to. Files it publishes: $(awk '{print $2}' "$manifest" | tr '\n' ' ')"
+            echo "| \`${rel}\` | not a shared file |" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+            drifted=$((drifted + 1))
+            continue
+          fi
+
+          local_file="${root%/}/${rel}"
+          checked=$((checked + 1))
+
+          if [ ! -f "$local_file" ]; then
+            echo "::error file=${local_file}::${rel} is missing. ${upstream} publishes this file and this repository does not have it at ${local_file}."
+            echo "| \`${rel}\` | **missing** |" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+            drifted=$((drifted + 1))
+            continue
+          fi
+
+          actual="$(hash_of "$local_file")"
+
+          if [ "$actual" != "$expected" ]; then
+            # Naming the direction, because "these differ" leaves the reader to
+            # work out who moved. Upstream is the published state; the local
+            # copy is the one this repository controls and can re-sync.
+            echo "::error file=${local_file}::${rel} has DRIFTED from ${upstream}. Upstream sha256 ${expected}; this repository's copy ${actual}. Re-copy the file from ${upstream}, or if this repository changed it deliberately, that change needs to go upstream instead."
+            echo "| \`${rel}\` | **drifted** — upstream \`${expected:0:12}…\`, here \`${actual:0:12}…\` |" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+            drifted=$((drifted + 1))
+          else
+            echo "ok        ${rel}  ${expected}"
+            echo "| \`${rel}\` | ok |" >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+          fi
+        done
+
+        if [ "$drifted" -ne 0 ]; then
+          # "problem" rather than "drifted", because an unknown filename in
+          # `files` is a mistake in the caller's workflow, not evidence that
+          # anything moved — and telling them a file drifted would be false.
+          echo >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+          echo "${drifted} problem(s) found against \`${upstream}\`." >> "${GITHUB_STEP_SUMMARY:-/dev/null}"
+          echo "::error::${drifted} problem(s) comparing this repository against ${upstream}. Each one is named above."
+          exit 1
+        fi
+
+        echo "${checked} shared file(s) match ${upstream}." | tee -a "${GITHUB_STEP_SUMMARY:-/dev/null}"
