@@ -61,11 +61,12 @@ A plain `file://` open will not work — the page fetches its schemas and CSVs.
 ---
 
 **End-user documentation:** [`docs/field-guide.html`](docs/field-guide.html) &mdash; rewritten
-2026-09-01 for the current app: two products, roles as nodes, channels and beads, modes and manifest.
-`docs/GUIDE.md` — purpose, the two reader paths
-(new at Vale da Lama, new to the Barlavento community), the two administrator roles, the full data
-models, and what is still provisional. `docs/field-guide.html` is the same document as a shareable
-page. This README is the builder's view; the guide is the user's.
+2026-09-01 for the current app: two products, roles as nodes, channels and beads, modes and
+manifest; purpose, the two reader paths (new at Vale da Lama, new to the Barlavento community),
+the two administrator roles, the full data models, and what is still provisional. It is served
+from this repo's Pages at <https://ludwa6.github.io/orgmap-lab/docs/field-guide.html>, which is
+where every deployment's `manifest.guideUrl` points. This README is the builder's view; the guide
+is the user's.
 
 ## The premise it corrects
 
