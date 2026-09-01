@@ -24,6 +24,17 @@
       "schemas": [
         "example"
       ]
+    },
+    "vdl-live": {
+      "label": "Vale da Lama — LIVE from production",
+      "schemas": [
+        "vdl-target",
+        "vdl-doublelink"
+      ],
+      "source": {
+        "format": "graph",
+        "path": "https://valedalama.github.io/vdl-orgdev/graph.json"
+      }
     }
   }
 }

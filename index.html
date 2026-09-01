@@ -165,6 +165,7 @@
   #detail .empty{color:var(--dim);font-size:12px;font-style:italic}
   #detail .note{color:var(--dim);font-size:12px;font-style:italic;margin-top:.5rem}
   .dimmed{opacity:.16}
+  .searchdim{opacity:.12}
   code{font-family:var(--mono);font-size:.9em;background:var(--panel2);padding:.05em .3em;border-radius:4px}
 </style>
 </head>
@@ -175,6 +176,9 @@
   <div class="field"><label for="ds">Dataset</label><select id="ds"></select></div>
   <div class="field"><label for="sc">Schema</label><select id="sc"></select></div>
   <div class="spacer"></div>
+  <div class="field" id="searchWrap"><label for="q">Find</label>
+    <input id="q" type="search" placeholder="name…" autocomplete="off" style="width:150px"></div>
+  <span id="deployBadge" class="kindtag" style="display:none;margin-left:.2rem"></span>
   <a class="btn" id="guide" href="docs/field-guide.html" target="_blank" rel="noopener"
      title="How to read these maps, who they are for, and what is still provisional (g)">Field
      guide <span class="ext">&#8599;</span></a>
@@ -187,6 +191,7 @@
   <button id="relayout" class="primary">Re-derive layout</button>
 </header>
 
+<div class="banner" id="deployBanner" style="display:none"></div>
 <div class="banner" id="banner"></div>
 
 <main>
@@ -320,6 +325,31 @@ function cacheUsable(d){
   return true;
 }
 
+// Kept deliberately narrow: source shapes, not organisations. build-graph.mjs
+// already emits {nodes:[{id,name,nodeType,...}], edges:[{source,type,target}]},
+// so the adapter is a rename, not a translation.
+async function fetchGraph(src){
+  const r = await fetch(src.path, { cache: "no-store" });
+  if (!r.ok) throw new Error("graph source " + r.status + " at " + src.path);
+  const g = await r.json();
+  return {
+    nodes: (g.nodes || []).map(n => ({ ...n })),
+    edges: (g.edges || []).map(e => ({
+      ...e,
+      subject: e.source, predicate: e.type, object: e.target,
+      note: e.label || "",
+    })),
+  };
+}
+
+async function fetchCsvPair(ds){
+  const [n, e] = await Promise.all([
+    fetch("data/" + ds + "/nodes.csv", { cache: "no-store" }).then(r => r.text()),
+    fetch("data/" + ds + "/edges.csv", { cache: "no-store" }).then(r => r.text()),
+  ]);
+  return { nodes: parseCSV(n), edges: parseCSV(e) };
+}
+
 async function loadDataset(ds, forceSeed){
   if (!forceSeed && !READ_ONLY){
     const cached = localStorage.getItem(storeKey(ds));
@@ -331,11 +361,8 @@ async function loadDataset(ds, forceSeed){
       } catch(e){}
     }
   }
-  const [n, e] = await Promise.all([
-    fetch("data/" + ds + "/nodes.csv", { cache: "no-store" }).then(r => r.text()),
-    fetch("data/" + ds + "/edges.csv", { cache: "no-store" }).then(r => r.text())
-  ]);
-  const fresh = { nodes: parseCSV(n), edges: parseCSV(e) };
+  const src = (DATASET_DEFS[ds] || {}).source;
+  const fresh = src && src.format === "graph" ? await fetchGraph(src) : await fetchCsvPair(ds);
   if (!READ_ONLY) localStorage.setItem(storeKey(ds), JSON.stringify(fresh));
   return fresh;
 }
@@ -928,6 +955,7 @@ function render(keepPositions){
   svg.on("click", closeDetail);
   lastSel = { node, link };
   applyFocus();
+  applySearch();
 
   const simNodes = nodes.filter(n => !rideIds.has(n.id));
   const simLinks = links.filter(l => !rideIds.has(l.source.id) && !rideIds.has(l.target.id));
@@ -1230,6 +1258,42 @@ function applyMode(){
   const split = document.getElementById("split"); if (split) split.remove();
 }
 
+let searchTerm = "";
+function applySearch(){
+  if (!lastSel.node) return;
+  const q = searchTerm.trim().toLowerCase();
+  lastSel.node.classed("searchdim", d => {
+    if (!q) return false;
+    const hay = [d.name, d.fullName, d.roleType, d.purpose].filter(Boolean).join(" ").toLowerCase();
+    return !hay.includes(q);
+  });
+  lastSel.link.classed("searchdim", l => !!q);
+}
+document.getElementById("q").addEventListener("input", e => {
+  searchTerm = e.target.value; applySearch();
+});
+
+// Deployment chrome: a banner, a badge and links, declared by the manifest so
+// the renderer carries no organisation's words.
+function applyDeploymentChrome(manifest){
+  const b = document.getElementById("deployBanner");
+  if (manifest.banner) {
+    b.innerHTML = manifest.banner +
+      (manifest.links || []).map(l => ' <a href="' + l.url + '" target="_blank" rel="noopener">' +
+        l.label + " &rarr;</a>").join("");
+    b.style.display = "";
+  }
+  const badge = document.getElementById("deployBadge");
+  if (manifest.badge) { badge.textContent = manifest.badge; badge.style.display = ""; }
+  const g = document.getElementById("guide");
+  if (manifest.guideUrl) g.href = manifest.guideUrl;
+  else if (manifest.guideUrl === null || manifest.hideGuide) g.remove();
+  if (manifest.title) {
+    document.querySelector("header h1").textContent = manifest.title;
+    document.title = manifest.title;
+  }
+}
+
 document.getElementById("ds").onchange = e => useDataset(e.target.value);
 document.getElementById("sc").onchange = e => useSchema(e.target.value);
 document.getElementById("relayout").onclick = () => render(false);
@@ -1357,6 +1421,7 @@ document.addEventListener("keydown", e => {
   const manifest = await loadManifest();
   READ_ONLY = modeParam ? modeParam === "view" : manifest.mode === "view";
   applyMode();
+  applyDeploymentChrome(manifest);
   loadViewState();
   setPanels(viewState.panels); setControls(viewState.controls);
 
