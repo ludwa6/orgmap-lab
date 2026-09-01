@@ -243,8 +243,24 @@ const DATASETS = {
   barlavento: { label: "Barlavento community (14 orgs)", schemas: ["barlavento-current", "barlavento-vocab"] },
   vdl:        { label: "Vale da Lama (Holacracy)",       schemas: ["vdl-target", "vdl-doublelink", "vdl-current"] }
 };
-const NODE_COLS = ["id","name","nodeType","region","membership","roleType","status","website","themes","purpose"];
-const EDGE_COLS = ["subject","predicate","object","via","confirmed","source","note"];
+// The renderer must not know what columns an organisation keeps. These are the
+// only ones it relies on structurally; everything else is discovered from the
+// file it loaded and from the schema's declared attributes. Adding a third
+// organisation must never mean editing this file.
+const NODE_KEYS = ["id", "name", "nodeType"];
+const EDGE_KEYS = ["subject", "predicate", "object"];
+
+// Union of: the structural keys, the schema's attributes, and whatever columns
+// the loaded file actually carried — so an export never silently drops a column
+// the schema has not heard of.
+function colsFor(kind){
+  const base = kind === "nodes" ? NODE_KEYS : EDGE_KEYS;
+  const rows = kind === "nodes" ? data.nodes : data.edges;
+  const declared = kind === "nodes" && schema
+    ? (schema.attributes || []).map(a => a.key) : [];
+  const seen = rows.length ? Object.keys(rows[0]) : [];
+  return [...new Set([...base, ...declared, ...seen])];
+}
 
 /* ------------------------------------------------------------------- state */
 let schema = null, data = { nodes: [], edges: [] }, dsId = "barlavento", scId = "barlavento-current";
@@ -299,8 +315,8 @@ const storeKey = ds => "orgmap-lab:" + ds;
 function cacheUsable(d){
   if (!d || !Array.isArray(d.nodes) || !Array.isArray(d.edges)) return false;
   const has = (row, cols) => row && cols.every(c => c in row);
-  if (d.edges.length && !has(d.edges[0], EDGE_COLS)) return false;
-  if (d.nodes.length && !has(d.nodes[0], NODE_COLS)) return false;
+  if (d.edges.length && !has(d.edges[0], EDGE_KEYS)) return false;
+  if (d.nodes.length && !has(d.nodes[0], NODE_KEYS)) return false;
   return true;
 }
 
@@ -1221,8 +1237,8 @@ document.getElementById("reseed").onclick = () => {
   if (confirm("Discard local edits and reload " + dsId + " from data/" + dsId + "/*.csv?"))
     useDataset(dsId, true);
 };
-document.getElementById("expN").onclick = () => download(dsId + "-nodes.csv", toCSV(NODE_COLS, data.nodes));
-document.getElementById("expE").onclick = () => download(dsId + "-edges.csv", toCSV(EDGE_COLS, data.edges));
+document.getElementById("expN").onclick = () => download(dsId + "-nodes.csv", toCSV(colsFor("nodes"), data.nodes));
+document.getElementById("expE").onclick = () => download(dsId + "-edges.csv", toCSV(colsFor("edges"), data.edges));
 document.getElementById("addNode").onclick = () => {
   data.nodes.push({ id: "new-" + (data.nodes.length + 1), name: "New node",
                     nodeType: schema.nodeTypes[0].id });
