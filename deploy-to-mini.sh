@@ -14,3 +14,8 @@ if [ -n "$(git -C "$(dirname "$0")" log --branches --not --remotes --oneline 2>/
   echo "note: commits not yet pushed to origin — the Mini copy carries no history."
   echo "      git -C $(dirname "$0") push"
 fi
+
+# The field guide is copied into each deployment that links to it, so a rewrite
+# has to be copied out again. Named here because a stale guide is worse than none.
+echo "reminder: if docs/field-guide.html changed, copy it to any deployment that links it"
+echo "          cp docs/field-guide.html ~/dev/vdl-orgdev/docs/"
