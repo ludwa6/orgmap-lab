@@ -24,11 +24,45 @@ crash and comes back at login. It does **not** come back on an unattended reboot
 as the WordPress sandbox. Editing happens here and is pushed there; the Mini copy is a deployment,
 not a second working tree.
 
+## The two products
+
+The same file runs in two modes. `manifest.json` sets the default; `?mode=view` and
+`?mode=workbench` override it.
+
+| | The Map | The Workbench |
+|---|---|---|
+| For | everyone in the organisation | whoever does the modelling |
+| Editor | **removed from the DOM** | present |
+| Writes to the browser | **nothing at all** | edits and layout |
+
+A per-organisation deployment sets `"mode": "view"` and declares only its own dataset. This repo is
+the workbench: `mode: workbench`, three datasets.
+
+**Live example:** <https://valedalama.github.io/vdl-orgdev/> runs this renderer in view mode.
+
+## Adding an organisation
+
+Touches no code &mdash; tested, not asserted. A manifest entry, a schema, and two CSVs:
+
+```
+manifest.json          one entry under "datasets"
+schemas/<yours>.json   node kinds, predicates, and what may join what
+data/<yours>/nodes.csv id, name, nodeType, + anything else you keep
+data/<yours>/edges.csv subject, predicate, object
+```
+
+Copy `schemas/example.json` and `data/example/` &mdash; they exist to be forked.
+
+A dataset may instead declare `"source": {"format": "graph", "path": "graph.json"}` to read a single
+`{nodes, edges}` JSON, which is how the Vale da Lama deployment consumes what its Notion job emits.
+
 A plain `file://` open will not work — the page fetches its schemas and CSVs.
 
 ---
 
-**End-user documentation:** [`docs/GUIDE.md`](docs/GUIDE.md) — purpose, the two reader paths
+**End-user documentation:** [`docs/field-guide.html`](docs/field-guide.html) &mdash; rewritten
+2026-09-01 for the current app: two products, roles as nodes, channels and beads, modes and manifest.
+`docs/GUIDE.md` — purpose, the two reader paths
 (new at Vale da Lama, new to the Barlavento community), the two administrator roles, the full data
 models, and what is still provisional. `docs/field-guide.html` is the same document as a shareable
 page. This README is the builder's view; the guide is the user's.

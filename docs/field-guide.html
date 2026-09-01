@@ -171,12 +171,14 @@
   html{scroll-behavior:smooth}
 </style>
 
+
 <div class="shell">
 
 <nav class="rail" aria-label="Sections">
-  <div class="railmark">OrgMap Lab</div>
+  <div class="railmark">OrgMap</div>
   <ol>
     <li><a href="#what">What this is</a></li>
+    <li><a href="#two">Two products</a></li>
     <li><a href="#idea">The one idea</a></li>
     <li><a href="#reading">Reading a map</a></li>
     <li class="grp">If you are new</li>
@@ -188,46 +190,74 @@
     <li class="grp">Reference</li>
     <li><a href="#models">The data models</a></li>
     <li><a href="#views">Views and controls</a></li>
+    <li><a href="#deploy">Running and deploying</a></li>
     <li><a href="#provisional">What is provisional</a></li>
-    <li><a href="#running">Running it</a></li>
   </ol>
 </nav>
 
 <main>
 
 <header class="mast">
-  <p class="eyebrow">Insider preview &middot; 29 August 2026</p>
-  <h1>OrgMap Lab Field Guide</h1>
-  <p class="standfirst">One renderer, two organisations, four ways of reading them. This is the
+  <p class="eyebrow">1 September 2026</p>
+  <h1>OrgMap Field Guide</h1>
+  <p class="standfirst">One renderer, three organisations, several ways of reading each. This is the
   guide to what the maps say, who they are for, and <em>what the software will not let you claim.</em></p>
 
   <div class="preview">
-    <b>This is a preview, not a release.</b> Everything here &mdash; every field, every colour, every
-    line &mdash; is up for revision. It is being shown to a small group first, precisely so the structures
-    can be hardened and the noise stripped out before anyone else sees them. Where a choice is still
-    open, this guide says so rather than pretending otherwise.
+    <b>Live, and still moving.</b> The Vale da Lama map is published at
+    <a href="https://valedalama.github.io/vdl-orgdev/">valedalama.github.io/vdl-orgdev</a> and runs the
+    same renderer described here. Design decisions marked <em>open</em> below are genuinely open &mdash;
+    where a choice has not been made, this guide says so rather than pretending otherwise.
   </div>
 </header>
 
 <h2 id="what"><span class="num">01</span>What this is</h2>
 <p class="dek">A tool for mapping the social system of an organisation, or of a community of
-organisations, from a data file that anyone can read.</p>
+organisations, from a data file anyone can read.</p>
 
 <p>Most org charts are drawings. Somebody arranges boxes, and the arrangement becomes the claim &mdash;
-who matters, who reports to whom, who is at the centre. When the organisation changes, the drawing
-is redrawn, and the reasoning behind the first version is lost.</p>
+who matters, who reports to whom, who is at the centre. When the organisation changes, the drawing is
+redrawn, and the reasoning behind the first version is lost.</p>
 
-<p>OrgMap Lab is built the other way round. There is a <strong>data file</strong> that records what
-is true, and a <strong>schema</strong> that says what kinds of thing may be recorded and how each is
+<p>OrgMap is built the other way round. There is a <strong>data file</strong> that records what is
+true, and a <strong>schema</strong> that says what kinds of thing may be recorded and how each is
 drawn. The picture is generated. Change the data and the picture follows; change the schema and the
 same data is read differently, with nothing edited at all.</p>
 
-<p>Two maps run in it today, and they are as different as two maps can be &mdash; a single farm's internal
-governance, and a bioregional network of independent land projects. That they run on the same
-renderer is the point: the pattern generalises, and a third context needs a schema file, not a
-fork.</p>
+<p>Three organisations run in it today, and they are as different as three can be &mdash; a single farm's
+internal governance, a bioregional network of independent land projects, and a small worked example
+that is neither. <strong>The renderer contains the words "circle", "role" and "member" nowhere in its
+code.</strong> The schema tells it what things are; the code never knows.</p>
 
-<h2 id="idea"><span class="num">02</span>The one idea</h2>
+<h2 id="two"><span class="num">02</span>Two products, one file</h2>
+<p class="dek">The same code runs in two modes, for two audiences. Knowing which one you are looking
+at explains most of what you can and cannot do.</p>
+
+<div class="wide">
+<table>
+  <thead><tr><th></th><th>The Map</th><th>The Workbench</th></tr></thead>
+  <tbody>
+    <tr><td>Who</td><td>everyone in the organisation</td><td>the one or two people doing the modelling</td></tr>
+    <tr><td>Where</td><td>published &mdash; a public or private web address</td><td>local, or a private URL</td></tr>
+    <tr><td>Can edit?</td><td><b>No.</b> There is no editor and no Export</td><td>Yes &mdash; rows, and the schema files</td></tr>
+    <tr><td>Remembers you?</td><td><b>No.</b> It writes nothing to your browser</td><td>Yes &mdash; your edits and your layout</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>A deployment declares which it is, in a file called <code>manifest.json</code>, along with its
+title, its datasets, and any banner or links it wants in the header. <strong>Add
+<code>?mode=view</code> to any address to see the published version; <code>?mode=workbench</code>
+for the editor.</strong></p>
+
+<div class="aside">
+  <span class="tag">Why it matters</span>
+  <p>The Vale da Lama map names real colleagues. A published map that shipped an editor would invite
+  someone to change the organisation's record by clicking on it &mdash; so in view mode the editor is
+  not hidden, it is <b>removed</b>, and there is no path by which the page can write anything at all.</p>
+</div>
+
+<h2 id="idea"><span class="num">03</span>The one idea</h2>
 <p class="dek">Three moves. Everything else in the tool follows from them.</p>
 
 <h3>Attributes are not relationships</h3>
@@ -246,9 +276,8 @@ styling, so the map can be filtered, checked, and argued with.</p>
 <p>The public map, a regional view, a governance view: all of them are the same rows read through
 different rules. There is never a second picture maintained by hand somewhere else.</p>
 
-<h2 id="reading"><span class="num">03</span>Reading a map</h2>
-<p class="dek">The legend, once. It is the same on both maps &mdash; only the vocabulary changes.</p>
-
+<h2 id="reading"><span class="num">04</span>Reading a map</h2>
+<p class="dek">The legend, once. It is the same on every map &mdash; only the vocabulary changes.</p>
 <figure class="legend">
 <svg viewBox="0 0 620 250" role="img" aria-label="Map legend: node with halo, and the five line treatments">
   <!-- nodes row -->
@@ -302,46 +331,61 @@ different rules. There is never a second picture maintained by hand somewhere el
 Dashes mean the claim is not settled.</figcaption>
 </figure>
 
+<h3>Circles, lines &mdash; and beads</h3>
+<p>Where a map draws a <strong>channel</strong> (see below), the role that carries it rides the line
+as a small <strong>bead</strong>. A bead says who holds that position, and whether the organisation
+has actually decided so:</p>
+
+<div class="wide">
+<table>
+  <thead><tr><th>Bead</th><th>Means</th></tr></thead>
+  <tbody>
+    <tr><td><b>Initials</b></td><td>someone holds it, and a ratification date is on record</td></tr>
+    <tr><td><b>Initials + <span style="color:var(--ochre)">?</span></b></td><td>someone holds it, but no ratification is recorded</td></tr>
+    <tr><td><b>?</b></td><td><b>vacant</b> &mdash; the seat exists and nobody is in it</td></tr>
+    <tr><td><b>Hollow, dotted</b></td><td><b>no record</b> &mdash; the seat was never created</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="aside warn">
+  <span class="tag">The distinction that took longest to get right</span>
+  <p><b>Vacant and absent are different failures.</b> A vacant seat is a job waiting for someone. An
+  absent one was never written down, so nothing renders it &mdash; and <em>nothing reads as fine.</em> The
+  ghost bead exists because a map that draws nothing where a seat should be will be read as a map
+  with no problem there.</p>
+</div>
+
 <h3>What a line's record tells you</h3>
 <p>More than the line can. Both ends, the predicate spelled out, who declared it, whether both sides
-did, whether it is confirmed, where the row came from &mdash; and two things worth naming
-separately:</p>
+did, whether it is confirmed, where the row came from &mdash; and two things worth naming separately:</p>
 <ul>
   <li><strong>Runs through.</strong> Where a relationship exists because of a particular person, the
-    panel names them. The shared-personnel line between Mud Valley Foundation and Quinta Vale da
+    record names them. The shared-personnel line between Mud Valley Foundation and Quinta Vale da
     Lama runs through Walt Ludwick, and the record says so.</li>
   <li><strong>What this publishes.</strong> The exact two-field entry the subject would carry in its
     own Murmurations profile &mdash; predicate and object, and nothing else. Set beside the full
-    record, it shows the line that matters: <em>who the relationship runs through is recorded
-    locally and is not part of the published claim.</em> "We share personnel with X" is the
-    organisation's to say; naming the individual is that person's.</li>
+    record, it shows the line that matters: <em>who the relationship runs through is recorded locally
+    and is not part of the published claim.</em></li>
 </ul>
 
 <h4>Also worth knowing</h4>
 <ul>
-  <li><strong>Hover a circle</strong> for everything recorded about it &mdash; its kind, how many
-    lines are drawn to it in this view, and every attribute that has a value.</li>
-  <li><strong>Hover a line</strong> for both ends, the predicate it uses (spelled out in full),
-    who declared it, whether it is confirmed, where the row came from, and any note. Lines are
-    thin, so each one carries a wide invisible catch area &mdash; you do not have to hit the
-    stroke exactly.</li>
-  <li><strong>Drag</strong> a circle to pull it out of a tangle. <strong>Scroll</strong> to zoom,
-    drag the background to pan.</li>
-  <li><strong>Field guide</strong> in the header, or <kbd>g</kbd>, opens this document in a new
-    tab &mdash; so the map always carries its own instructions.</li>
-  <li><strong>Click</strong> a circle or a line to open its full record in a panel on the right.
-    Hovering is a glance; clicking is the record, and it stays open while you look elsewhere.
-    Everything the selection is not about dims, so the map and the panel agree. Click the
-    background or press <kbd>esc</kbd> to close.</li>
-  <li>The panel <strong>walks</strong>: a node's record lists every connection, and a line's record
-    lists both ends. Click any of them to move the panel there.</li>
-  <li>The number under a circle counts the lines currently drawn &mdash; so it changes when you change
-    the view. That is correct, not a glitch.</li>
-  <li>A circle with no lines has none <em>of the kinds now being drawn</em>. It has not dropped out
-    of the community.</li>
+  <li><strong>Hover a circle</strong> for everything recorded about it. <strong>Hover a line</strong>
+    for both ends, the predicate, who declared it, and any note. Lines are thin, so each carries a
+    wide invisible catch area &mdash; you do not have to hit the stroke.</li>
+  <li><strong>Click</strong> anything to open its full record on the right. Hovering is a glance;
+    clicking is the record, and it stays open while you look elsewhere. Everything the selection is
+    not about dims. The panel <strong>walks</strong> &mdash; click any connection to move there.</li>
+  <li><strong>Find</strong> in the header dims what does not match. It never hides, so a filter can
+    never be mistaken for an absence.</li>
+  <li><strong>Drag</strong> a circle out of a tangle; scroll to zoom; drag the background to pan.
+    Beads ride their own line and are moved by moving the circles.</li>
+  <li>The number under a circle counts the lines <em>currently drawn</em> &mdash; so it changes when you
+    change the view. That is correct, not a glitch.</li>
 </ul>
 
-<h2 id="vdl"><span class="num">04</span>If you are new at Vale da Lama</h2>
+<h2 id="vdl"><span class="num">05</span>If you are new at Vale da Lama</h2>
 
 <div class="path">
   <p class="who">For someone joining the farm</p>
@@ -349,41 +393,41 @@ separately:</p>
   departments, and people fill <strong>roles</strong> inside them. The map exists so you can see the
   shape of that without reading the whole governance handbook first.</p>
 
+  <p><strong>The map is at
+  <a href="https://valedalama.github.io/vdl-orgdev/">valedalama.github.io/vdl-orgdev</a>.</strong></p>
+
   <h3>Find yourself in four steps</h3>
   <ol class="steps">
-    <li>Open the lab, set <strong>Dataset</strong> to <em>Vale da Lama (Holacracy)</em>.</li>
-    <li>Leave <strong>Schema</strong> on <em>as build-graph.mjs emits today</em> &mdash; that is the live
-      picture.</li>
-    <li>Find your own name among the 14 people. Every line from you runs to a circle you are part
-      of.</li>
-    <li>Hover any circle to read its <strong>purpose</strong> &mdash; the one sentence that says why it
+    <li>Type your name into <strong>Find</strong>. Everything that is not you dims.</li>
+    <li>The circles you are attached to are the ones still lit. <strong>Click your name</strong> for
+      your full record &mdash; every role you energize, and which circle each sits in.</li>
+    <li>Hover any circle to read its <strong>purpose</strong> &mdash; the one sentence saying why it
       exists. Those sentences are the fastest orientation to the farm there is.</li>
+    <li>Switch <strong>Schema</strong> to <em>double link</em> to see how your circle connects to the
+      one above it.</li>
   </ol>
 
-  <h3>What the map can tell you today</h3>
+  <h3>What the map tells you</h3>
   <p>There are <strong>nine circles</strong>: VdL Farm, Farm Ops, Casa Ops, Groups &amp; Retreats,
-  Activities, B&amp;B Accommodations, Restaurant, OMG (Organic Market Garden), and HFC (Holistic
-  Farm Care). Eight lines show which circle sits inside which. The rest show which of the
-  <strong>14 people</strong> belong where.</p>
+  Activities, B&amp;B Accommodations, Restaurant, OMG (Organic Market Garden), and HFC (Holistic Farm
+  Care). It holds <strong>28 roles</strong> across them, and <strong>14 people</strong>.</p>
+
+  <p><strong>A person is not a job title here.</strong> People energize roles, and several people hold
+  more than one &mdash; Anna Pelegrim is Secretary of Farm Ops <em>and</em> Circle Rep of OMG. The map draws
+  that as two roles, because it is two roles.</p>
 
   <div class="aside warn">
-    <span class="tag">Known gap</span>
-    <p><strong>The map cannot yet tell you what anybody actually does.</strong> A person connects
-    straight to a circle, so three roles held in one circle look identical to one &mdash; and a role
-    nobody is filling shows as nothing at all. Switch the schema to <em>org:Post model</em> and the
-    tool marks every one of those lines: 7 errors and 11 warnings, out of 26 rows. That is the
-    argument for fixing it, made in the tool rather than in a memo.</p>
+    <span class="tag">What it shows that no previous version could</span>
+    <p><strong>Nine seats are empty, and you can see them.</strong> A role exists whether or not
+    anybody holds it, so an unfilled position is a mark on the map rather than a silence. Activities
+    has no Lead, no Rep and no Secretary. Farm Ops' Circle Rep is open pending election.</p>
+    <p><strong>And nineteen roles are held by someone with no ratification on record.</strong> That is
+    not an accusation &mdash; it means the governance decision was never written down. Each amber
+    <b>?</b> disappears as a date is recorded.</p>
   </div>
-
-  <h3>Why the vacancies matter</h3>
-  <p>The farm's Roles database holds 27 roles, and <strong>8 of them have nobody in them</strong> &mdash;
-  including every sub-circle Secretary. An unfilled role is exactly what a governance meeting needs
-  to see. Today it is invisible, because the map has no place to put a role that nobody holds. That
-  is the single change that would make this map useful in a governance meeting rather than merely
-  informative.</p>
 </div>
 
-<h2 id="barlavento"><span class="num">05</span>If you are new to the Barlavento community</h2>
+<h2 id="barlavento"><span class="num">06</span>If you are new to the Barlavento community</h2>
 
 <div class="path">
   <p class="who">For a member organisation</p>
@@ -400,11 +444,10 @@ separately:</p>
       <strong>5 lines instead of 23</strong>, and the centre is gone.</li>
   </ol>
 
-  <p>The difference is the whole argument. Of the 23 recorded connections, 12 were one organisation
-  recording that it convenes everybody, and 6 were simply "these two are in the same place."
-  Eighteen of twenty-three lines were facts about single organisations, drawn as if they were
-  relationships. Once they move onto the circles where they belong, the honest size of the recorded
-  relationship graph is <strong>five</strong>.</p>
+  <p>Of the 23 recorded connections, 12 were one organisation recording that it convenes everybody,
+  and 6 were "these two are in the same place." Eighteen of twenty-three lines were facts about
+  single organisations, drawn as if they were relationships. Once they move onto the circles where
+  they belong, the honest size of the recorded relationship graph is <strong>five</strong>.</p>
 
   <div class="aside">
     <span class="tag">The rule that matters</span>
@@ -413,24 +456,18 @@ separately:</p>
   </div>
 
   <h3>How to put yourself on the map properly</h3>
-  <p>Everything currently drawn about you was recorded <em>about</em> you by somebody else. You can
-  replace that with your own claim, published from your own domain:</p>
   <ol class="steps">
     <li>Publish a <strong>Murmurations profile</strong> on your own website, carrying the
-      <code>barlavento-eco</code> tag. That is what puts you in the community's index.</li>
+      <code>barlavento-eco</code> tag.</li>
     <li>Your location and address are already ordinary profile fields &mdash; do not record them as
       connections to anybody.</li>
     <li>To declare a relationship, add an entry to your profile's <code>relationships</code> array
-      with two values: a <strong>predicate</strong> saying what kind of relationship it is, and the
-      <strong>other organisation's web address</strong>.</li>
-    <li>Two predicates exist today. Use <code>https://schema.org/affiliation</code> for a genuine
-      association, and the community's own
-      <code>&hellip;/predicates/shared-personnel/</code> when a person is active in both
-      organisations.</li>
+      with a <strong>predicate</strong> and the <strong>other organisation's web address</strong>.</li>
+    <li>Two predicates exist today: <code>https://schema.org/affiliation</code>, and the community's
+      own <code>&hellip;/predicates/shared-personnel/</code>.</li>
   </ol>
   <p>Both sides declaring the same link makes it <strong>mutual</strong>, and the map draws it
-  thicker. One side is enough to draw it at all &mdash; you should not be invisible because somebody else
-  has not got round to publishing.</p>
+  thicker. One side is enough to draw it at all.</p>
 
   <div class="aside">
     <span class="tag">On naming people</span>
@@ -440,39 +477,46 @@ separately:</p>
   </div>
 </div>
 
-<h2 id="admin-vdl"><span class="num">06</span>Administering the Vale da Lama data</h2>
-<p class="dek">The lab is not the source of truth here. Notion is.</p>
+<h2 id="admin-vdl"><span class="num">07</span>Administering the Vale da Lama data</h2>
+<p class="dek">The map is not the source of truth. Notion is.</p>
 
-<p>The chain runs: <strong>Notion</strong> holds the circles, people, and roles &rarr;
-<code>scripts/build-graph.mjs</code> in the <code>vdl-orgdev</code> repository turns them into
-<code>graph.json</code> &rarr; <code>scripts/seed.py</code> in the lab turns that into the two CSV
-files the lab reads.</p>
+<p>The chain runs: <strong>Notion</strong> holds the circles, people and roles &rarr;
+<code>scripts/build-graph.mjs</code> turns them into <code>graph.json</code> &rarr; the map reads that
+file. A GitHub Action runs the middle step every morning and commits the result <em>only when
+something changed</em>, so the file's history is the organisation's structural audit trail.</p>
 
 <h4>To change what the map says</h4>
-<p>Change it in Notion, regenerate <code>graph.json</code>, then re-run <code>seed.py</code> and
-press <strong>Reset to seed</strong>. Editing rows in the lab is for trying something out &mdash; those
-edits live in your browser only, and the next reseed discards them.</p>
+<p>Change it in Notion. The map catches up within a day, or immediately if you run the workflow by
+hand. There is nowhere else to edit it &mdash; the published map has no editor.</p>
 
 <h4>To change what the map is <em>allowed</em> to say</h4>
-<p>Edit <code>schemas/vdl-current.json</code> or <code>schemas/vdl-target.json</code>. Adding a node
-kind, a predicate, or an allowed value for a field is a few lines of JSON. Adding one to
-<code>vdl-target</code> is how you propose a change to the model without touching a single row of
-data.</p>
+<p>Edit a file in <code>schemas/</code>. Adding a node kind, a predicate, or an allowed value is a few
+lines. That is also how you propose a change to the model without touching a single row of data.</p>
 
-<h4>Your standing check</h4>
-<p>After any reseed, open <strong>Validate</strong>. The baseline is <strong>0 errors under the
-current schema</strong> and <strong>7 errors plus 11 warnings under the target schema</strong>. If
-the first number moves, something upstream broke. If the second number falls, somebody has done the
-role work &mdash; which is the outcome everyone is waiting for.</p>
+<h4>Recording a decision</h4>
+<p>Two date fields on every Role: <strong><code>Ratified On</code></strong> and
+<strong><code>Review Date</code></strong>. <strong>Blank does not mean "not ratified" &mdash; it means no
+record of ratification exists.</strong> Today that is the state of all nineteen occupied roles, which
+is why every held bead wears an amber <b>?</b>. Fill the date in after a Governance Meeting and the
+badge clears.</p>
+
+<div class="aside">
+  <span class="tag">Validation sheets</span>
+  <p>A circle validates its own record at its own meeting. <code>docs/generated/validation/</code>
+  holds one sheet per circle, in Portuguese and English, listing the four core roles, the defined
+  roles, and a <em>to check</em> section of everything a human must decide. Regenerate with
+  <code>node scripts/build-validation-sheets.mjs</code> after any change. Across the nine circles it
+  currently flags 24 items and 16 core seats with no record.</p>
+</div>
 
 <div class="aside warn">
   <span class="tag">Handle with care</span>
   <p>This map names <strong>real colleagues</strong> and shows where each of them sits. It is
-  internal governance material. There is no privacy layer in the lab yet &mdash; everyone who can open the
-  map can see every name &mdash; so treat a shared screen or a shared link accordingly.</p>
+  published, by a deliberate decision that Vale da Lama is transparent about its governance. There is
+  no privacy layer &mdash; everyone who has the address can see every name.</p>
 </div>
 
-<h2 id="admin-barlavento"><span class="num">07</span>Administering the Barlavento data</h2>
+<h2 id="admin-barlavento"><span class="num">08</span>Administering the Barlavento data</h2>
 <p class="dek">Two sources, and one job: make the second one disappear.</p>
 
 <p>Every row carries a <code>source</code>:</p>
@@ -489,75 +533,71 @@ role work &mdash; which is the outcome everyone is waiting for.</p>
 </div>
 
 <p><strong>Today every row is curated.</strong> Nobody in the original spreadsheet declared anything
-about themselves. So the <code>source</code> column is a ledger of unfinished business, and the
-map's honesty improves as it empties. Hovering any line shows that row's provenance, so you can
-audit the ledger from the map rather than from the table.</p>
+about themselves. So the <code>source</code> column is a ledger of unfinished business, and the map's
+honesty improves as it empties. Hovering any line shows that row's provenance, so the ledger can be
+audited from the map rather than the table.</p>
 
 <h4>Adding a member</h4>
 <p>You do not. They publish a profile with the <code>barlavento-eco</code> tag and the index finds
 them. If you must record something ahead of that, mark it <code>curated</code>, and mark it
 <strong>candidate</strong> if you are not certain &mdash; an unverified guess about a real organisation
-must never render as a fact. There is exactly one such row in the data today, and it has been
-waiting for confirmation since June.</p>
+must never render as a fact.</p>
 
 <h4>Adding a new kind of relationship</h4>
 <p>A predicate is just a stable web address that explains itself. Open a pull request adding a page
-under <code>docs/predicates/</code> in the community repository, with a fixed permalink. The page
-must say what the claim means, what it does <em>not</em> claim, and the nearest standard term. A
-predicate address is a permanent commitment &mdash; profiles across the wider network may point at it
-forever, so it can be clarified but never repurposed or deleted.</p>
+under <code>docs/predicates/</code>, with a fixed permalink. It must say what the claim means, what it
+does <em>not</em> claim, and the nearest standard term. <strong>A predicate address is a permanent
+commitment</strong> &mdash; it can be clarified, never repurposed or deleted.</p>
 
 <div class="aside">
   <span class="tag">Deliberately absent</span>
   <p>The original spreadsheet had a <strong>contact</strong> column naming an individual at each of
-  the 14 organisations. It is not carried into this data, because nothing in the map needs it and
-  those people did not opt in.</p>
+  the 14 organisations. It is not carried into this data: nothing in the map needs it, and those
+  people did not opt in.</p>
 </div>
 
-<h2 id="models"><span class="num">08</span>The data models</h2>
-<p class="dek">Two files per organisation &mdash; nodes and relationships &mdash; and a schema that governs
-both. This is the part most worth arguing with.</p>
+<h2 id="models"><span class="num">09</span>The data models</h2>
+<p class="dek">Two files per organisation &mdash; things and relationships &mdash; and a schema that governs both.
+This is the part most worth arguing with.</p>
 
-<h3>Every row, in both maps</h3>
+<h3>Every row, in every map</h3>
 <div class="wide">
 <table>
-  <caption>Node file</caption>
+  <caption>Things</caption>
   <thead><tr><th>Column</th><th>Holds</th></tr></thead>
   <tbody>
     <tr><td>id</td><td>The key relationships point at. Must be unique.</td></tr>
     <tr><td>name</td><td>What appears on the map.</td></tr>
     <tr><td>nodeType</td><td>Which kind of thing this is. Must be one the schema allows.</td></tr>
-    <tr><td>&hellip;attributes</td><td>Everything else the schema declares &mdash; region, membership,
-        role type, status, purpose.</td></tr>
+    <tr><td>&hellip;attributes</td><td>Everything else the schema declares. <b>Any column the file
+        carries is kept</b>, whether the schema mentions it or not.</td></tr>
   </tbody>
 </table>
 </div>
 <div class="wide">
 <table>
-  <caption>Relationship file</caption>
+  <caption>Relationships</caption>
   <thead><tr><th>Column</th><th>Holds</th></tr></thead>
   <tbody>
     <tr><td>subject</td><td>The id making the claim.</td></tr>
     <tr><td>predicate</td><td>What kind of claim. Must be one the schema allows.</td></tr>
     <tr><td>object</td><td>The id it points at.</td></tr>
-    <tr><td>via</td><td>Who or what the relationship runs through. Local record only &mdash; it is
-        never published.</td></tr>
+    <tr><td>via</td><td>Who or what the relationship runs through. <b>Local record only &mdash; never published.</b></td></tr>
     <tr><td>confirmed</td><td><code>false</code> marks it a candidate; it draws dotted.</td></tr>
     <tr><td>source</td><td>Where the row came from.</td></tr>
-    <tr><td>note</td><td>Free text, for humans.</td></tr>
   </tbody>
 </table>
 </div>
 
 <h3>Barlavento &mdash; the four kinds</h3>
-<p>Nodes are Project, Initiative, Network, or Convener. The four recorded kinds of connection split
-two and two, and that split is the entire difference between the two schemas:</p>
+<p>Nodes are Project, Initiative, Network or Convener. The four recorded kinds of connection split
+two and two, and that split is the entire difference between its two schemas:</p>
 <div class="wide">
 <table>
   <thead><tr><th>Kind</th><th class="num">Rows</th><th>Under <em>vocabulary.md</em></th><th>Drawn as</th></tr></thead>
   <tbody>
     <tr><td>Membership</td><td class="num">12</td><td>attribute</td><td>a halo on the circle</td></tr>
-    <tr><td>Co&#8209;location</td><td class="num">6</td><td>attribute</td><td>colour &mdash; it is already a field on every node</td></tr>
+    <tr><td>Co&#8209;location</td><td class="num">6</td><td>attribute</td><td>colour &mdash; already a field on every node</td></tr>
     <tr><td>Affiliation</td><td class="num">3</td><td>relationship</td><td>a line &middot; <code>schema.org/affiliation</code></td></tr>
     <tr><td>Shared personnel</td><td class="num">2</td><td>relationship</td><td>a line &middot; the community's own predicate</td></tr>
   </tbody>
@@ -565,56 +605,62 @@ two and two, and that split is the entire difference between the two schemas:</p
 </div>
 
 <h3>Vale da Lama &mdash; the reified role</h3>
-<p>Nodes are Circle and Person today; the target model adds Role. The change is small to state and
-large in effect: instead of a person connecting to a circle, a person fills a <em>role</em>, and the
-role sits in the circle.</p>
+<p>Nodes are Circle, <strong>Role</strong> and Person. Instead of a person connecting to a circle, a
+person fills a <em>role</em>, and the role sits in the circle:</p>
 <div class="wide">
 <table>
-  <thead><tr><th>Relationship</th><th>From &rarr; to</th><th>Standard term</th><th>Status</th></tr></thead>
+  <thead><tr><th>Relationship</th><th>From &rarr; to</th><th>Standard term</th></tr></thead>
   <tbody>
-    <tr><td>Sub&#8209;circle</td><td>circle &rarr; circle</td><td><code>org:subOrganizationOf</code></td><td>in use</td></tr>
-    <tr><td>Role in its circle</td><td>role &rarr; circle</td><td><code>org:postIn</code></td><td>target model</td></tr>
-    <tr><td>Fills the role</td><td>person &rarr; role</td><td><code>org:holds</code></td><td>target model</td></tr>
-    <tr><td>Leads</td><td>person &rarr; circle</td><td>&mdash;</td><td>collapsed; flagged</td></tr>
-    <tr><td>Represents</td><td>person &rarr; circle</td><td>&mdash;</td><td>collapsed; flagged</td></tr>
+    <tr><td>Sub&#8209;circle</td><td>circle &rarr; circle</td><td><code>org:subOrganizationOf</code></td></tr>
+    <tr><td>Role in its circle</td><td>role &rarr; circle</td><td><code>org:postIn</code></td></tr>
+    <tr><td>Fills the role</td><td>person &rarr; role</td><td><code>org:holds</code></td></tr>
+    <tr><td>Member, no role recorded</td><td>person &rarr; circle</td><td>&mdash; <em>a record disagreement, off by default</em></td></tr>
   </tbody>
 </table>
 </div>
 <p>A role that exists whether or not anybody holds it is a standard idea &mdash; the W3C Organization
-Ontology calls it a <code>Post</code>, and that class exists for exactly this reason. Reifying the
-relationship is what lets an empty position be <em>visible</em> instead of rendering as nothing.</p>
+Ontology calls it a <code>Post</code>, and that class exists for exactly this reason.
+<strong>Reifying the relationship is what lets an empty position be visible instead of rendering as
+nothing.</strong></p>
+
+<h3>Channels &mdash; when two roles are one mechanism</h3>
+<p>A schema may declare a <strong>channel</strong>: a relationship derived by composing two others,
+drawn as an arc rather than as separate lines. Vale da Lama's is the Holacracy double link.</p>
+<p>A <strong>Circle Lead</strong> is appointed by the circle above and carries its purpose
+<em>down</em> &mdash; solidarity. A <strong>Circle Rep</strong> is elected by the circle's members and
+carries tensions <em>up</em> &mdash; subsidiarity. Together they are one two-way channel, and the map draws
+them as a pair with the role riding its own arc. <strong>Where one half is vacant the channel is
+drawn broken</strong>, because a circle with no Rep has no way to speak upward.</p>
+<p>Nothing about this is Holacracy-specific. Sociocracy's operational leader and elected
+representative are the same two arcs with different labels; only the strings in the schema change.</p>
 
 <h3>How the schema stops you</h3>
-<p>Two layers, and the first one is the one you will actually feel:</p>
 <ul>
   <li><strong>The editor only offers what is legal.</strong> Every governed field is a dropdown built
     from the schema. Under <em>vocabulary.md</em> the relationship editor offers two predicates;
-    co-location is listed but cannot be chosen, because it is not a relationship. You cannot type a
-    typo into a controlled field.</li>
+    co-location is listed but cannot be chosen, because it is not a relationship.</li>
   <li><strong>Validate checks the whole file.</strong> Ten rules, each naming itself: unknown
     predicate, wrong kind of thing at either end of a line, missing id, a line to nowhere, a line to
     itself, a duplicate claim, a value outside a controlled list, a deprecated predicate, and rows
     absorbed as attributes rather than drawn.</li>
 </ul>
-<p>The rule that carries the most weight is the one about the ends of a line. "Fills the role" may
+<p>The rule carrying the most weight is the one about the ends of a line. <em>Fills the role</em> may
 only point at a role &mdash; so a person connected straight to a circle is refused rather than quietly
-drawn. That refusal is the whole finding about the Vale da Lama data.</p>
+drawn.</p>
 
-<h2 id="views"><span class="num">09</span>Views and controls</h2>
-<p class="dek">Four readings of two datasets, plus the dials.</p>
+<h2 id="views"><span class="num">10</span>Views and controls</h2>
+<p class="dek">Three datasets, six readings, and the dials.</p>
 
 <div class="wide">
 <table>
-  <thead><tr><th>Dataset</th><th>Schema</th><th class="num">Rows</th><th class="num">Drawn</th><th>What it is for</th></tr></thead>
+  <thead><tr><th>Dataset</th><th>Schema</th><th>What it is for</th></tr></thead>
   <tbody>
-    <tr><td>Barlavento</td><td>as recorded today</td><td class="num">23</td><td class="num">23</td>
-        <td>The live map, and the problem</td></tr>
-    <tr><td>Barlavento</td><td>vocabulary.md</td><td class="num">23</td><td class="num">5</td>
-        <td>The proposal, on the same rows</td></tr>
-    <tr><td>Vale da Lama</td><td>as generated today</td><td class="num">26</td><td class="num">26</td>
-        <td>The live governance map</td></tr>
-    <tr><td>Vale da Lama</td><td>org:Post model</td><td class="num">26</td><td class="num">26</td>
-        <td>The same rows, checked against where it is going</td></tr>
+    <tr><td rowspan="2">Barlavento</td><td>as recorded today</td><td>The live map, and the problem</td></tr>
+    <tr><td>vocabulary.md</td><td>The proposal, on the same rows &mdash; 23 in, 5 out</td></tr>
+    <tr><td rowspan="3">Vale da Lama</td><td><b>org:Post model</b> (shipped)</td><td>What the map now emits: roles as nodes</td></tr>
+    <tr><td><b>double link</b></td><td>Solidarity and subsidiarity as one channel per circle</td></tr>
+    <tr><td>the collapsed model <em>(retired)</em></td><td>Kept deliberately: point the old schema at today's data and <b>it</b> is what fails</td></tr>
+    <tr><td>Example co-operative</td><td>start here</td><td>An Assembly, Working Groups, Members &mdash; the fork template</td></tr>
   </tbody>
 </table>
 </div>
@@ -623,60 +669,98 @@ drawn. That refusal is the whole finding about the Vale da Lama data.</p>
 <ul>
   <li><strong>Draw</strong> &mdash; a switch per relationship kind. Turning them off one at a time is the
     fastest way to see what any single kind contributes.</li>
-  <li><strong>Colour by</strong> &mdash; node kind, or an attribute. Barlavento offers Region; Vale da
-    Lama offers Status.</li>
-  <li><strong>Badge by</strong> &mdash; draws a halo where an attribute is present. Barlavento offers
-    Membership; the Vale da Lama target model offers Role type.</li>
-  <li><strong>Labels</strong> &mdash; names on or off, and whether mutual pairs draw thicker.</li>
-  <li><strong>Re-derive layout</strong> &mdash; throw the arrangement away and let it settle again. Worth
-    doing after any change that alters the number of lines.</li>
+  <li><strong>Colour by</strong> and <strong>Badge by</strong> &mdash; node kind, or an attribute.
+    <strong>Both hide themselves when they cannot change anything</strong> in the current view: a
+    control that does nothing invites a click and teaches that the app is broken.</li>
+  <li><strong>Find</strong> &mdash; dims what does not match.</li>
+  <li><strong>Labels</strong> &mdash; names on or off; whether mutual pairs draw thicker.</li>
+  <li><strong>Re-derive layout</strong> &mdash; throw the arrangement away and let it settle again.</li>
 </ul>
 
 <h4>Giving the map the screen</h4>
 <div class="wide">
 <table class="keys">
   <tbody>
-    <tr><td>esc</td><td>Close the record panel &mdash; or, with none open, restore the chrome</td></tr>
-    <tr><td>g</td><td>Open this field guide in a new tab</td></tr>
     <tr><td>m</td><td>Map only &mdash; hides the panels and the controls</td></tr>
-    <tr><td>p</td><td>Panels on or off. The tab strip stays; clicking a tab brings them back</td></tr>
+    <tr><td>p</td><td>Panels on or off <em>(workbench only)</em></td></tr>
     <tr><td>c</td><td>Controls on or off</td></tr>
     <tr><td>f</td><td>Fullscreen</td></tr>
+    <tr><td>esc</td><td>Close the record panel &mdash; or, with none open, bring it all back</td></tr>
+    <tr><td>g</td><td>Open this field guide</td></tr>
   </tbody>
 </table>
 </div>
-<p>All five are buttons in the header too, the bar above the tabs drags to any height, and the
-framing you choose is remembered. A big change of size re-derives the layout so the graph fills the
-space; a small one leaves the arrangement you were reading alone.</p>
+<p>A big change of size re-derives the layout so the graph fills the space; a small one leaves the
+arrangement you were reading alone.</p>
 
-<h2 id="provisional"><span class="num">10</span>What is provisional &mdash; and what to tell us</h2>
-<p class="dek">This is the section this preview exists for.</p>
+<h2 id="deploy"><span class="num">11</span>Running and deploying</h2>
+
+<h3>Looking at a published map</h3>
+<p>Open its address. Vale da Lama's is
+<a href="https://valedalama.github.io/vdl-orgdev/">valedalama.github.io/vdl-orgdev</a>. Nothing to
+install, nothing to log into, and it will not remember you.</p>
+
+<h3>Running the workbench</h3>
+<div class="wide">
+<table class="keys">
+  <tbody>
+    <tr><td>./run.sh</td><td>Serves it at <code>http://localhost:8090/</code></td></tr>
+    <tr><td>scripts/seed.py</td><td>Rebuilds the sample datasets from their real sources</td></tr>
+    <tr><td>./deploy&#8209;to&#8209;mini.sh</td><td>Pushes a copy to the always-on machine</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Opening the file directly will not work &mdash; the page fetches its schemas and data, and browsers block
+that for local files. Your edits live in your own browser; <strong>Reset to seed</strong> discards
+them, and <strong>Export</strong> hands them back as files you can commit.</p>
+
+<h3>Deploying a map for your own organisation</h3>
+<ol class="steps">
+  <li><strong>Fork the repository.</strong></li>
+  <li><strong>Put your things and relationships into two CSVs.</strong> A spreadsheet export is fine.
+    Things need <code>id, name, nodeType</code>; relationships need
+    <code>subject, predicate, object</code>. Everything else is optional and is kept if present.</li>
+  <li><strong>Write a schema</strong> declaring your node kinds, your predicates, and which kinds of
+    thing each predicate may join. Copy <code>schemas/example.json</code> and edit it.</li>
+  <li><strong>Write a <code>manifest.json</code></strong>: your title, <code>"mode": "view"</code>,
+    your dataset, and any banner or links for the header.</li>
+  <li><strong>Look at the map. Argue. Go back to step 3.</strong> This is the actual work, and it is
+    governance work rather than software work.</li>
+  <li><strong>Turn on Pages.</strong></li>
+  <li><em>Optional, and last:</em> write a loader so the CSVs regenerate from wherever your truth
+    already lives. An organisation whose structure changes twice a year never needs this.</li>
+</ol>
+
+<div class="aside">
+  <span class="tag">What a deployment declares</span>
+  <p><code>manifest.json</code> carries the title, the mode, the datasets and where each one's data
+  comes from &mdash; a pair of CSVs, or a single <code>{nodes, edges}</code> JSON. <strong>Adding an
+  organisation touches no code.</strong> That is not an aspiration: it was tested by adding a third
+  one and checking that the renderer file was untouched.</p>
+</div>
+
+<h2 id="provisional"><span class="num">12</span>What is provisional &mdash; and what to tell us</h2>
 
 <h3>Open, by design</h3>
 <ul>
-  <li><strong>Every visual treatment.</strong> How membership, region, or a confirmed pair should
-    <em>look</em> is a design decision, and it has not been made. What is in front of you is a
-    placeholder that reads clearly enough to argue about.</li>
+  <li><strong>Every visual treatment.</strong> How a channel, a vacancy or a confirmed pair should
+    <em>look</em> is a design decision. What is in front of you reads clearly enough to argue about.</li>
   <li><strong>Whether four kinds are enough</strong> for Barlavento. They are the four found in the
-    recorded data &mdash; not a considered taxonomy. If a real relationship in this community has no home
-    among them, that is the most useful thing you could report.</li>
-  <li><strong>What a browsing member actually needs.</strong> Most people will want to look
-    something up and leave. There is no read-only view yet; everyone gets the full editor. Deciding
-    what the simple view shows is the next real design question.</li>
+    recorded data &mdash; not a considered taxonomy.</li>
+  <li><strong>Photographs on beads.</strong> The code supports them; nobody has uploaded one, so every
+    bead shows initials. Two letters where we have a full name, one where we do not.</li>
 </ul>
 
 <h3>Known noise</h3>
 <ul>
-  <li><strong>Membership is on all 14 Barlavento nodes</strong>, so as a badge it distinguishes
-    nobody. It only earns its halo once non-members appear on the map.</li>
   <li><strong>Every Vale da Lama node has status "Active"</strong>, so colouring by status shows a
-    single colour. The dial is there because the model supports it, not because it currently says
-    anything.</li>
-  <li><strong>Themes and purpose are free text.</strong> Useful on hover, uncontrolled, and not yet
-    worth filtering on.</li>
-  <li><strong>Both maps carry columns nothing renders.</strong> Website, size, and similar came
-    along with the source data. Stripping them is easy; knowing which ones somebody relies on is
-    not &mdash; so say if you use one.</li>
+    single colour &mdash; which is why that control now hides itself there.</li>
+  <li><strong>Membership is on all 14 Barlavento nodes</strong>, so as a badge it distinguishes
+    nobody. It earns its halo once non-members appear.</li>
+  <li><strong>Purpose and themes are free text.</strong> Useful on hover, uncontrolled.</li>
+  <li><strong>Three "member, no role recorded" lines</strong> in the Vale da Lama data are two records
+    disagreeing about who is in a circle. They are off by default and are a question for a Governance
+    Meeting, not a bug.</li>
 </ul>
 
 <h3>What would help most</h3>
@@ -684,67 +768,15 @@ space; a small one leaves the arrangement you were reading alone.</p>
   <li>Open the map that concerns you and try to answer a question you actually have. Tell us the
     question, not the bug.</li>
   <li>Name a field you would delete, and one you wish existed.</li>
-  <li>If a line about your organisation is wrong, say so &mdash; that is data, and it is the fastest kind
-    of fix.</li>
+  <li>If a line about your organisation is wrong, say so &mdash; that is data, and the fastest kind of fix.</li>
 </ol>
 
-<h2 id="running"><span class="num">11</span>Running it</h2>
-<p class="dek">Two places it runs, and for a demo you want the second one.</p>
-
-<p>The lab lives on a working machine, and a copy is served from the <strong>Mac mini</strong>, which
-is on all the time. Anyone signed in to the tailnet reaches that copy from any device, on or off the
-farm network:</p>
-<p><a href="http://mudvalleyinstitutes-mac-mini.tailb0b9f5.ts.net:8090/"><code>http://mudvalleyinstitutes-mac-mini.tailb0b9f5.ts.net:8090/</code></a></p>
-<p>It is held up by a keep-alive agent, so it survives a crash and returns at login. It does not
-survive an unattended reboot &mdash; the disk is encrypted and needs somebody to sign in first.</p>
-
-<p>To run your own copy instead:</p>
-<div class="wide">
-<table class="keys">
-  <tbody>
-    <tr><td>./run.sh</td><td>Serves it at <code>http://localhost:8090/</code></td></tr>
-    <tr><td>scripts/seed.py</td><td>Rebuilds both datasets from their real sources</td></tr>
-    <tr><td>./deploy&#8209;to&#8209;mini.sh</td><td>Pushes your copy to the Mini and restarts it there</td></tr>
-  </tbody>
-</table>
-</div>
-<p>Opening the file directly will not work &mdash; the page fetches its schemas and data, and browsers
-block that for local files. Your edits are kept in your own browser; <strong>Reset to seed</strong>
-discards them, and <strong>Export</strong> hands them back as files you can commit.</p>
-
-<div class="aside">
-  <span class="tag">Adding a third map</span>
-  <p>A new context needs a schema file and two CSVs. Node kinds, attributes with their allowed
-  values, and predicates with the kinds of thing each may connect &mdash; that is the whole contract.
-  Nothing in the renderer knows about farms, circles, or the Algarve.</p>
-</div>
-
 <footer class="colophon">
-  <p>OrgMap Lab &middot; insider preview, 29 August 2026. Rendered from
-  <code>docs/GUIDE.md</code> in the project, which is the version that travels with the code.
-  Corrections to this guide are as welcome as corrections to the data.</p>
+  <p>OrgMap Field Guide &middot; 1 September 2026. Rendered from <code>docs/field-guide.html</code> in
+  the project, which is the version that travels with the code. This guide is rewritten when the app
+  changes; if something here does not match what you see, the app is right and this is stale &mdash;
+  please say so.</p>
 </footer>
 
 </main>
 </div>
-
-<script>
-  // Mark the section you are reading in the rail.
-  (function(){
-    var links = Array.prototype.slice.call(document.querySelectorAll(".rail a"));
-    var byId = {};
-    links.forEach(function(a){ byId[a.getAttribute("href").slice(1)] = a; });
-    var heads = Object.keys(byId).map(function(id){ return document.getElementById(id); })
-                      .filter(Boolean);
-    if (!heads.length || !("IntersectionObserver" in window)) return;
-    var seen = {};
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){ seen[e.target.id] = e.isIntersecting; });
-      var current = null;
-      heads.forEach(function(h){ if (seen[h.id] && !current) current = h.id; });
-      if (!current) return;
-      links.forEach(function(a){ a.classList.toggle("here", a === byId[current]); });
-    }, { rootMargin: "-8% 0px -72% 0px", threshold: 0 });
-    heads.forEach(function(h){ io.observe(h); });
-  })();
-</script>
