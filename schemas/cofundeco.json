@@ -1,0 +1,89 @@
+{
+  "id": "cofundeco",
+  "dataset": "cofundeco",
+  "label": "CoFundEco — Mediterranean node",
+  "note": "A convening network: people affiliate with organisations, and organisations connect to the shared project. Neither a holarchy nor a peer network of equals — a third org form, which is the point of it being here. Exported from Kumu by the community's own data steward; contact fields are dropped at load.",
+  "governs": {
+    "label": "kumu.io/bp8/cofundeco",
+    "url": "https://kumu.io/bp8/cofundeco"
+  },
+  "nodeTypes": [
+    {
+      "id": "person",
+      "label": "Person",
+      "color": "#f59e0b",
+      "r": 16
+    },
+    {
+      "id": "organization",
+      "label": "Organisation",
+      "color": "#14b8a6",
+      "r": 26
+    }
+  ],
+  "predicates": [
+    {
+      "id": "person-organization",
+      "label": "affiliated with",
+      "kind": "edge",
+      "directed": true,
+      "style": {
+        "color": "#f59e0b",
+        "width": 2,
+        "dash": null
+      },
+      "subjectTypes": [
+        "person"
+      ],
+      "objectTypes": [
+        "organization"
+      ]
+    },
+    {
+      "id": "Project connection",
+      "label": "connected to the project",
+      "kind": "edge",
+      "directed": true,
+      "style": {
+        "color": "#14b8a6",
+        "width": 2,
+        "dash": null
+      },
+      "subjectTypes": [
+        "*"
+      ],
+      "objectTypes": [
+        "*"
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "key": "region",
+      "label": "Country",
+      "control": "enum-open",
+      "render": "color"
+    },
+    {
+      "key": "city",
+      "label": "City",
+      "control": "text"
+    },
+    {
+      "key": "segment",
+      "label": "Segment",
+      "control": "enum-open",
+      "render": "badge"
+    },
+    {
+      "key": "website",
+      "label": "Website",
+      "control": "text"
+    },
+    {
+      "key": "purpose",
+      "label": "In their own words",
+      "control": "text"
+    }
+  ]
+}

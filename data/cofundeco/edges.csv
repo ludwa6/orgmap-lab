@@ -1,0 +1,41 @@
+subject,predicate,object,direction,weight,note,status,confirmed,source
+98628,Project connection,90638,directed,0,,,true,kumu
+99046,Project connection,90638,directed,0,,,true,kumu
+99047,Project connection,90638,directed,0,,,true,kumu
+99048,Project connection,90638,directed,0,,,true,kumu
+99049,Project connection,90638,directed,0,,,true,kumu
+99274,Project connection,90638,directed,0,,,true,kumu
+90638,Project connection,99059,directed,0,,,true,kumu
+90638,Project connection,98628,directed,0,,,true,kumu
+90638,Project connection,99274,directed,0,,,true,kumu
+99058,Project connection,90638,directed,0,,,true,kumu
+90638,Project connection,99058,directed,0,,,true,kumu
+90638,Project connection,99954,directed,0,,,true,kumu
+101212,Project connection,90638,directed,0,,,true,kumu
+99058,Project connection,99059,directed,0,,,true,kumu
+99087,person-organization,99059,directed,,,Actively involved,true,kumu
+92415,person-organization,99046,directed,,I am the Co-Founder of Théra,Actively involved,true,kumu
+80921,person-organization,99274,directed,,,Actively involved,true,kumu
+81470,person-organization,99274,directed,,,Actively involved,true,kumu
+87883,person-organization,99274,directed,,,Actively involved,true,kumu
+80960,person-organization,90638,directed,,,,true,kumu
+87883,person-organization,90638,directed,,,,true,kumu
+80891,person-organization,90638,directed,,,,true,kumu
+90613,person-organization,99058,directed,,i am the president of the entity responsible for this project.,Actively involved,true,kumu
+110177,person-organization,99058,directed,,I'm directly collaborating with Mud Valley Institute,Actively involved,true,kumu
+110392,person-organization,99058,directed,,,Actively involved,true,kumu
+81589,person-organization,98628,directed,,Founder and leader,Actively involved,true,kumu
+92415,person-organization,90638,directed,,,,true,kumu
+80921,person-organization,90638,directed,,,,true,kumu
+80891,person-organization,99274,directed,,"Karim, Hadi, Yara, and Farah have all been part of the CoFundEco community since mid-2023 and my respect for them and desire to see them thrive is enourmous.",'Friend of the project',true,kumu
+99953,person-organization,99954,directed,,,Actively involved,true,kumu
+90613,person-organization,90638,directed,,,,true,kumu
+99052,person-organization,90638,directed,,,,true,kumu
+81589,person-organization,99047,directed,,I am the founder of this company,,true,kumu
+81589,person-organization,99046,directed,,I am participating in the design of the land around Théra Center in Tarn et Garonne,Actively involved,true,kumu
+80891,person-organization,98628,directed,,,Interested in becoming involved,true,kumu
+90613,person-organization,99059,directed,,I am co-owner/operator of the entity responsible for this project,Actively involved,true,kumu
+102121,person-organization,101212,directed,,,Actively involved,true,kumu
+81589,person-organization,99049,directed,,I was part of this project from 2014 to 2022,Previously involved,true,kumu
+102121,person-organization,90638,directed,,,,true,kumu
+81589,person-organization,90638,directed,,,,true,kumu
