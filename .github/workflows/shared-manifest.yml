@@ -1,0 +1,28 @@
+# SHARED.sha256 names the files that three deployments copy out of this repo.
+# Consumers trust it, so it must never describe a tree that no longer exists:
+# changing index.html here without republishing the hashes has to be unmergeable.
+name: shared manifest
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: SHARED.sha256 matches the tree
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # stdlib only — no setup-python, no pip. The runner's python3 is enough,
+      # and a check with no dependencies is a check that cannot rot.
+      - name: Verify the manifest
+        run: python3 scripts/shared-manifest.py --check
+
+      # Belt and braces, and a live demonstration of the promise the format
+      # makes: a consumer can verify their copies without running our code.
+      - name: Verify the same manifest with sha256sum
+        run: sha256sum -c SHARED.sha256
