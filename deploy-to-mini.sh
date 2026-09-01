@@ -15,7 +15,7 @@ if [ -n "$(git -C "$(dirname "$0")" log --branches --not --remotes --oneline 2>/
   echo "      git -C $(dirname "$0") push"
 fi
 
-# The field guide is copied into each deployment that links to it, so a rewrite
-# has to be copied out again. Named here because a stale guide is worse than none.
-echo "reminder: if docs/field-guide.html changed, copy it to any deployment that links it"
-echo "          cp docs/field-guide.html ~/dev/vdl-orgdev/docs/"
+# The guide is no longer copied anywhere. It is served from one address —
+# https://ludwa6.github.io/orgmap-lab/docs/field-guide.html — and every
+# deployment's manifest points at that. A reminder to copy a file by hand was
+# always a weak control; deleting the copies is the strong one.

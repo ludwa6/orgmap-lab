@@ -36,5 +36,6 @@
         "path": "https://valedalama.github.io/vdl-orgdev/graph.json"
       }
     }
-  }
+  },
+  "guideUrl": "docs/field-guide.html"
 }
