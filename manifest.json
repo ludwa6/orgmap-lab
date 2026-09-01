@@ -35,6 +35,12 @@
         "format": "graph",
         "path": "https://valedalama.github.io/vdl-orgdev/graph.json"
       }
+    },
+    "cofundeco": {
+      "label": "CoFundEco — Mediterranean node (Kumu)",
+      "schemas": [
+        "cofundeco"
+      ]
     }
   },
   "guideUrl": "docs/field-guide.html"
