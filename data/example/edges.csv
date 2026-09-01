@@ -1,0 +1,10 @@
+subject,predicate,object,note
+wg-finance,accountableTo,assembly,
+wg-outreach,accountableTo,assembly,
+wg-care,accountableTo,assembly,newest group
+m-rosa,worksIn,wg-finance,
+m-tomas,worksIn,wg-finance,
+m-tomas,worksIn,wg-outreach,two groups
+m-lin,worksIn,wg-outreach,
+m-abebe,worksIn,wg-care,
+m-rosa,delegatesTo,assembly,elected delegate

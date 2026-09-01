@@ -1,0 +1,26 @@
+{
+  "id": "example",
+  "dataset": "example",
+  "label": "Example co-operative — start here",
+  "note": "A deliberately small, deliberately different organisation: an Assembly, some Working Groups and their Members. Nothing here is a circle, a role or a project — it exists to show that the renderer does not know what those are. Fork it, replace the two CSVs with your own, and edit this file.",
+  "nodeTypes": [
+    { "id": "Assembly",     "label": "Assembly",      "color": "#e07a5f", "r": 30 },
+    { "id": "WorkingGroup", "label": "Working group", "color": "#3d9970", "r": 22 },
+    { "id": "Member",       "label": "Member",        "color": "#7f8fa6", "r": 14 }
+  ],
+  "attributes": [
+    { "key": "mandate", "label": "Mandate", "control": "text" },
+    { "key": "joined",  "label": "Joined",  "control": "enum-open", "render": "color" }
+  ],
+  "predicates": [
+    { "id": "accountableTo", "label": "Accountable to", "kind": "edge",
+      "subjectTypes": ["WorkingGroup"], "objectTypes": ["Assembly"], "directed": true,
+      "style": { "color": "#3d9970", "width": 2.4, "dash": null } },
+    { "id": "worksIn", "label": "Works in", "kind": "edge",
+      "subjectTypes": ["Member"], "objectTypes": ["WorkingGroup"], "directed": true,
+      "style": { "color": "#7f8fa6", "width": 1.6, "dash": "3,3" } },
+    { "id": "delegatesTo", "label": "Delegated to the Assembly", "kind": "edge",
+      "subjectTypes": ["Member"], "objectTypes": ["Assembly"], "directed": true,
+      "style": { "color": "#e07a5f", "width": 2.2, "dash": "6,3" } }
+  ]
+}

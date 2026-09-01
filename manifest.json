@@ -4,7 +4,26 @@
   "mode": "workbench",
   "defaultDataset": "barlavento",
   "datasets": {
-    "barlavento": { "label": "Barlavento community (14 orgs)", "schemas": ["barlavento-current", "barlavento-vocab"] },
-    "vdl":        { "label": "Vale da Lama (Holacracy)",       "schemas": ["vdl-target", "vdl-doublelink", "vdl-current"] }
+    "barlavento": {
+      "label": "Barlavento community (14 orgs)",
+      "schemas": [
+        "barlavento-current",
+        "barlavento-vocab"
+      ]
+    },
+    "vdl": {
+      "label": "Vale da Lama (Holacracy)",
+      "schemas": [
+        "vdl-target",
+        "vdl-doublelink",
+        "vdl-current"
+      ]
+    },
+    "example": {
+      "label": "Example co-operative (start here)",
+      "schemas": [
+        "example"
+      ]
+    }
   }
 }
