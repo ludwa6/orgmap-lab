@@ -1,1 +1,10 @@
 .DS_Store
+
+# ── Bram workspace state ──────────────────────────────────────────────────
+# Bram's runtime workspace, not the project: port files that churn on every
+# launch, worklist drafts and history. Setup rewrites bram-conventions.md and
+# AGENTS.md on every upgrade. CLAUDE.md is the deliberate exception — it
+# carries the Planner/Coder convention below Bram's marker block.
+resources/
+.claude/
+AGENTS.md
