@@ -692,6 +692,9 @@ drawn.</p>
 </div>
 <p>A big change of size re-derives the layout so the graph fills the space; a small one leaves the
 arrangement you were reading alone.</p>
+<p><strong>A published map opens as the map alone</strong> &mdash; a slim header, the deployment's
+banner, and the graph. The dials are still there for anyone who wants them: press <b>c</b>, or
+<b>esc</b> to bring everything back.</p>
 
 <h2 id="deploy"><span class="num">11</span>Running and deploying</h2>
 
@@ -755,6 +758,22 @@ them, and <strong>Export</strong> hands them back as files you can commit.</p>
   Notion database; the other draws a peer network of independent farms from profiles those farms
   publish on their own domains. What differs between them is a manifest, two schema files and the
   data.</p>
+</div>
+
+<div class="aside">
+  <span class="tag">Embedding a published map in another page</span>
+  <p>A map in view mode is built to be dropped into a page on your own site. Give it the address of
+  the deployment and a height:</p>
+  <p><code>&lt;iframe src="https://your-org.github.io/path/to/map/"
+  style="width:100%;height:700px;border:0" allow="fullscreen"&gt;&lt;/iframe&gt;</code></p>
+  <p><strong><code>allow="fullscreen"</code> is what gives the map a Fullscreen button</strong>
+  inside the frame; without it the button is left out rather than shown and dead. The map reads
+  comfortably down to about 520px tall. In a narrow frame &mdash; a phone &mdash; the header folds to
+  one row; in a narrow or a short one, the banner folds to two lines with a <em>more</em> toggle for
+  the rest.</p>
+  <p>GitHub Pages lets any site frame it &mdash; but if <em>your</em> page sends a
+  Content-Security-Policy, its <code>frame-src</code> must allow the map's address, or the frame
+  stays blank whatever GitHub sends.</p>
 </div>
 
 <h2 id="provisional"><span class="num">12</span>What is provisional &mdash; and what to tell us</h2>
