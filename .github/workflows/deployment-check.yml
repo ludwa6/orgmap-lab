@@ -1,0 +1,125 @@
+# Is what the three sites serve the thing this repo published?
+#
+# shared-manifest.yml keeps SHARED.sha256 true to this repo. This checks the
+# other side of it: the bytes each deployment actually serves. It runs HERE, on
+# a schedule, because the consumer repos go quiet, and a check that only runs
+# when they push inherits exactly the silence that let vdl-orgdev go stale.
+#
+# The alarm is one issue labelled deployment-drift, kept up to date while the
+# condition lasts and closed when every file matches. A red X alone would not
+# do: nobody watches this tab. Comments are what reach the Coder's session
+# (the inbound hook surfaces comments on open issues, never an issue body), so
+# the job comments when the issue opens and whenever the set of problems
+# changes, and stays quiet while the same stale file stays stale.
+#
+# Not on push: Pages takes minutes to deploy, so checking the moment a commit
+# lands would raise an alarm about a deploy that is simply still in progress.
+
+name: deployment check
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: deployment-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Compare what the deployments serve with SHARED.sha256
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch every deployment's shared files
+        id: check
+        run: |
+          set +e
+          python3 scripts/deployment-check.py --report-dir "$RUNNER_TEMP/drift"
+          code=$?
+          set -e
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/drift/report.md" >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Keep the deployment-drift issue in step
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          CODE: ${{ steps.check.outputs.code }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/drift"
+          label="deployment-drift"
+          if [ ! -f "$dir/fingerprint.txt" ]; then
+            echo "::error::The check wrote no report (exit ${CODE}), so there is nothing to put on an issue."
+            exit 1
+          fi
+          fp="$(cat "$dir/fingerprint.txt")"
+
+          gh label create "$label" --color B60205 \
+            --description "A deployment serves something the lab did not publish" >/dev/null 2>&1 || true
+          open="$(gh issue list --label "$label" --state open --json number --jq '.[0].number // empty')"
+
+          {
+            echo "_Maintained by the [deployment check](../blob/master/.github/workflows/deployment-check.yml) workflow. This body is rewritten on every run; the comments record each change._"
+            echo
+            cat "$dir/report.md"
+            echo
+            echo "Last checked by [this run](${RUN_URL})."
+            echo
+            echo "<!-- drift-fingerprint: ${fp} -->"
+          } > "$dir/body.md"
+          {
+            echo "_Posted by the deployment check workflow._"
+            echo
+            cat "$dir/summary.md"
+            echo
+            echo "[This run](${RUN_URL})"
+          } > "$dir/comment.md"
+
+          if [ "$CODE" = "0" ]; then
+            if [ -n "$open" ]; then
+              gh issue edit "$open" --body-file "$dir/body.md"
+              gh issue comment "$open" --body-file "$dir/comment.md"
+              gh issue close "$open"
+              echo "Every deployment matches: closed #${open}."
+            else
+              echo "Every deployment matches, and no drift issue is open."
+            fi
+            exit 0
+          fi
+
+          # Anything but a clean run keeps the alarm up. A run that could not
+          # look is not evidence of health, so it never closes the issue.
+          if [ -z "$open" ]; then
+            url="$(gh issue create --label "$label" \
+              --title "Deployment drift: a site serves something the lab did not publish" \
+              --body-file "$dir/body.md")"
+            gh issue comment "$url" --body-file "$dir/comment.md"
+            echo "Opened ${url}"
+          else
+            prev="$(gh issue view "$open" --json body --jq .body \
+              | sed -n 's/.*<!-- drift-fingerprint: \([0-9a-z]*\) -->.*/\1/p')"
+            gh issue edit "$open" --body-file "$dir/body.md"
+            if [ "$prev" != "$fp" ]; then
+              gh issue comment "$open" --body-file "$dir/comment.md"
+              echo "Updated #${open}: the problems changed, so commented."
+            else
+              echo "Updated #${open}: same problems as last run, so no comment."
+            fi
+          fi
+
+      - name: Go red when the deployments are not all current
+        if: steps.check.outputs.code != '0'
+        env:
+          CODE: ${{ steps.check.outputs.code }}
+        run: |
+          echo "::error::deployment-check exited ${CODE} (1 mismatch, 2 could not look, 3 configuration). See the deployment-drift issue."
+          exit 1

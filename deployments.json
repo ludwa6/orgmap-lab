@@ -1,0 +1,37 @@
+{
+  "_comment": "What each live deployment serves, checked daily against SHARED.sha256 by .github/workflows/deployment-check.yml. Each deployment carries a subset of the shared files. Adding a deployment is an entry here, never a change to the script or the workflow. The lab checks itself deliberately: on 2026-09-01 its repo was right and Pages served something else.",
+  "deployments": [
+    {
+      "name": "orgmap-lab",
+      "url": "https://ludwa6.github.io/orgmap-lab",
+      "files": [
+        "index.html",
+        "vendor/d3.min.js",
+        "schemas/vdl-target.json",
+        "schemas/vdl-doublelink.json",
+        "schemas/barlavento-current.json",
+        "schemas/barlavento-vocab.json"
+      ]
+    },
+    {
+      "name": "vdl-orgdev",
+      "url": "https://valedalama.github.io/vdl-orgdev",
+      "files": [
+        "index.html",
+        "vendor/d3.min.js",
+        "schemas/vdl-target.json",
+        "schemas/vdl-doublelink.json"
+      ]
+    },
+    {
+      "name": "barlavento",
+      "url": "https://barlavento-eco.github.io/docs/orgmap",
+      "files": [
+        "index.html",
+        "vendor/d3.min.js",
+        "schemas/barlavento-current.json",
+        "schemas/barlavento-vocab.json"
+      ]
+    }
+  ]
+}
