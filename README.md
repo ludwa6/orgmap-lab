@@ -12,6 +12,7 @@ datasets, without touching either project repo. Nothing here deploys anywhere.
 ```sh
 ./run.sh              # local, on whichever machine you are editing on
 ./deploy-to-mini.sh   # push to the always-on Mini and restart it there
+git config core.hooksPath .githooks   # once per clone
 ```
 
 | Where | URL | When to use it |
