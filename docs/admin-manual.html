@@ -1,0 +1,648 @@
+<title>OrgMap Admin Manual</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --ground:#F7F8FA; --surface:#FFFFFF; --surface-2:#EDF1F7;
+  --ink:#16202E; --ink-soft:#3D4B5E; --muted:#5A6A80;
+  --rule:#DCE3EC; --rule-strong:#C3CEDC;
+  --accent:#2F6FE0; --accent-soft:#E8EFFC;
+  --warn:#9C5D00; --warn-soft:#FBF1DC;
+  --good:#0D6B4F; --good-soft:#E0F2EA;
+  --sans:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+:root:not([data-theme="light"]){ @media (prefers-color-scheme:dark){
+  --ground:#101720; --surface:#18212E; --surface-2:#1F2A38;
+  --ink:#E6EDF6; --ink-soft:#BDC9D8; --muted:#8B9BB0;
+  --rule:#293546; --rule-strong:#3A4859;
+  --accent:#74A8F7; --accent-soft:#182A41;
+  --warn:#E8A33D; --warn-soft:#2C2314;
+  --good:#4BC69D; --good-soft:#12281F;
+}}
+:root[data-theme="dark"]{
+  --ground:#101720; --surface:#18212E; --surface-2:#1F2A38;
+  --ink:#E6EDF6; --ink-soft:#BDC9D8; --muted:#8B9BB0;
+  --rule:#293546; --rule-strong:#3A4859;
+  --accent:#74A8F7; --accent-soft:#182A41;
+  --warn:#E8A33D; --warn-soft:#2C2314;
+  --good:#4BC69D; --good-soft:#12281F;
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:1.65;
+  padding:0 clamp(1.25rem,5vw,4rem) 6rem;
+}
+.page{max-width:calc(14rem + 4rem + 80ch)}
+
+/* One left edge. The margin carries navigation rather than sitting empty:
+   ten sections is enough that a reader arrives looking for one of them. */
+.doc{display:grid; grid-template-columns:14rem minmax(0,80ch); gap:0 4rem; align-items:start}
+.toc{position:sticky; top:2rem; font-family:var(--sans)}
+.toc h2{
+  font-size:.68rem; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted); margin:0 0 .75rem;
+}
+.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:.1rem}
+.toc li{margin:0}
+.toc a{
+  display:grid; grid-template-columns:1.6rem 1fr; gap:.4rem;
+  padding:.3rem .45rem; border-radius:3px; font-size:.82rem; line-height:1.3;
+  color:var(--ink-soft); text-decoration:none; border-left:2px solid transparent;
+}
+.toc a:hover{background:var(--surface-2); color:var(--ink)}
+.toc a .n{font-family:var(--mono); font-size:.72rem; color:var(--muted); font-variant-numeric:tabular-nums}
+.toc a[aria-current="true"]{
+  background:var(--accent-soft); color:var(--ink); border-left-color:var(--accent); font-weight:500;
+}
+.toc a[aria-current="true"] .n{color:var(--accent)}
+
+/* ---------- masthead ---------- */
+.mast{padding:3.5rem 0 2rem; border-bottom:2px solid var(--ink); margin-bottom:3rem}
+.eyebrow{
+  font-family:var(--sans); font-size:.72rem; font-weight:600; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--accent); margin:0 0 .9rem;
+}
+h1{
+  font-family:var(--sans); font-weight:700; font-size:clamp(2.1rem,5vw,3.1rem);
+  line-height:1.05; letter-spacing:-.022em; margin:0 0 1rem; text-wrap:balance;
+}
+.standfirst{
+  font-size:1.12rem; color:var(--ink-soft); max-width:60ch; margin:0 0 1.5rem;
+}
+.mast-meta{
+  font-family:var(--mono); font-size:.76rem; color:var(--muted);
+  display:flex; flex-wrap:wrap; gap:.4rem 1.5rem;
+}
+
+/* ---------- section grid: one left edge, rail does a job ---------- */
+.s{padding:2.6rem 0; border-top:1px solid var(--rule); scroll-margin-top:1.5rem}
+/* Prose keeps a readable measure; tables and the diagram earn the extra width,
+   so the column's right edge carries wide content instead of sitting empty. */
+.body>h2,.body>h3,.body>p,.body>ul,.body>ol,.body>.note{max-width:68ch}
+.s:first-of-type{border-top:none; padding-top:0}
+.rail{
+  font-family:var(--sans); display:flex; gap:.7rem; align-items:baseline; margin-bottom:.5rem;
+}
+.rail .num{
+  font-size:.72rem; font-weight:600; letter-spacing:.14em; color:var(--accent);
+  font-variant-numeric:tabular-nums;
+}
+.rail .tag{font-size:.8rem; color:var(--muted); line-height:1.35}
+.body>*:first-child{margin-top:0}
+.body>*:last-child{margin-bottom:0}
+
+h2{
+  font-family:var(--sans); font-weight:600; font-size:1.5rem; line-height:1.2;
+  letter-spacing:-.015em; margin:0 0 1rem; text-wrap:balance;
+}
+h3{
+  font-family:var(--sans); font-weight:600; font-size:1.02rem;
+  margin:2rem 0 .6rem; letter-spacing:-.005em;
+}
+p{margin:0 0 1.05rem}
+strong{font-weight:600}
+code{
+  font-family:var(--mono); font-size:.855em; background:var(--surface-2);
+  padding:.1em .35em; border-radius:3px; word-break:break-word;
+}
+a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:2px}
+
+ul,ol{margin:0 0 1.05rem; padding-left:1.3rem}
+li{margin-bottom:.45rem}
+li::marker{color:var(--muted)}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto; margin:0 0 1.2rem; border:1px solid var(--rule); border-radius:5px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-family:var(--sans); font-size:.87rem}
+th,td{text-align:left; padding:.6rem .85rem; border-bottom:1px solid var(--rule); vertical-align:top}
+thead th{
+  font-size:.7rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); background:var(--surface-2); white-space:nowrap;
+}
+tbody tr:last-child td{border-bottom:none}
+td code{background:transparent; padding:0; font-size:.82rem}
+.num-col{font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* ---------- callouts: spent by role, not stamped everywhere ---------- */
+.note{
+  font-family:var(--sans); font-size:.92rem; line-height:1.55;
+  padding:.95rem 1.1rem; margin:0 0 1.2rem; border-radius:4px;
+  border-left:3px solid var(--rule-strong); background:var(--surface);
+}
+.note.warn{border-left-color:var(--warn); background:var(--warn-soft)}
+.note.key{border-left-color:var(--accent); background:var(--accent-soft)}
+.note .lbl{
+  display:block; font-size:.68rem; font-weight:600; letter-spacing:.13em;
+  text-transform:uppercase; margin-bottom:.35rem; color:var(--muted);
+}
+.note.warn .lbl{color:var(--warn)}
+.note.key .lbl{color:var(--accent)}
+.note p{margin:0 0 .6rem}
+.note p:last-child{margin-bottom:0}
+
+/* ---------- figure ---------- */
+figure{margin:1.4rem 0 1.3rem}
+.figwrap{overflow-x:auto; border:1px solid var(--rule); border-radius:5px; background:var(--surface); padding:1.1rem}
+figcaption{
+  font-family:var(--sans); font-size:.8rem; color:var(--muted);
+  margin-top:.6rem; line-height:1.5;
+}
+svg{display:block; min-width:560px; width:100%; height:auto}
+
+/* ---------- step list: a real sequence ---------- */
+ol.steps{list-style:none; padding:0; counter-reset:step}
+ol.steps>li{
+  counter-increment:step; position:relative; padding-left:2.2rem; margin-bottom:.9rem;
+}
+ol.steps>li::before{
+  content:counter(step); position:absolute; left:0; top:.08em;
+  font-family:var(--mono); font-size:.74rem; font-weight:500;
+  width:1.5rem; height:1.5rem; border-radius:50%;
+  display:grid; place-items:center;
+  background:var(--accent-soft); color:var(--accent);
+}
+
+.foot{
+  margin-top:3.5rem; padding-top:1.5rem; border-top:1px solid var(--rule);
+  font-family:var(--sans); font-size:.83rem; color:var(--muted); max-width:68ch;
+}
+
+@media (max-width:900px){
+  .doc{grid-template-columns:minmax(0,1fr); gap:0}
+  .toc{position:static; margin-bottom:2.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--rule)}
+  .toc ol{display:grid; grid-template-columns:repeat(auto-fill,minmax(14rem,1fr)); gap:.1rem .5rem}
+  .s{padding:2.1rem 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+</style>
+
+<div class="page">
+
+<header class="mast">
+  <p class="eyebrow">OrgMap Lab &middot; for data administrators</p>
+  <h1>OrgMap Admin Manual</h1>
+  <p class="standfirst">How the lab gets its data, what a client site actually receives from it,
+  and which parts of that journey nobody is watching. Written for someone who has never opened
+  this app.</p>
+  <div class="mast-meta">
+    <span>14 September 2026</span>
+    <span>renderer 3fb5168a</span>
+    <span>audience: Walt, Bruno</span>
+  </div>
+</header>
+
+<div class="doc">
+  <nav class="toc" aria-label="Contents">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s01"><span class="n">01</span><span>Start here</span></a></li>
+      <li><a href="#s02"><span class="n">02</span><span>The one idea</span></a></li>
+      <li><a href="#s03"><span class="n">03</span><span>Three layers</span></a></li>
+      <li><a href="#s04"><span class="n">04</span><span>Provenance</span></a></li>
+      <li><a href="#s05"><span class="n">05</span><span>The flow &mdash; read this twice</span></a></li>
+      <li><a href="#s06"><span class="n">06</span><span>Each client's source</span></a></li>
+      <li><a href="#s07"><span class="n">07</span><span>Doing the work</span></a></li>
+      <li><a href="#s08"><span class="n">08</span><span>The client's view</span></a></li>
+      <li><a href="#s09"><span class="n">09</span><span>Traps</span></a></li>
+      <li><a href="#s10"><span class="n">10</span><span>What is watched</span></a></li>
+    </ol>
+  </nav>
+  <main class="doc-main">
+<section class="s" id="s01">
+  <div class="rail"><span class="num">01</span><span class="tag">Start here</span></div>
+  <div class="body">
+    <h2>What the lab is, and what it is not</h2>
+    <p><strong>The lab is a workshop for designing models, not a database.</strong> You open it,
+    point it at a copy of some organisation's data, and try out different ways of reading that
+    data &mdash; what counts as a relationship, what counts as a fact about one organisation, what
+    gets drawn and what does not. When a way of reading proves itself, that <em>model</em> is what
+    ships to the organisation's own website.</p>
+
+    <p>It is not where anybody's real data lives, and it is not a place anyone outside this room
+    should be sent. Three organisations are modelled in it today &mdash; the Barlavento community,
+    Quinta Vale da Lama, and CoFundEco &mdash; plus a blank example to fork from.</p>
+
+    <div class="note key">
+      <span class="lbl">The sentence everything else follows from</span>
+      <p>A client's map is <strong>this app plus a model plus a settings file</strong>. The data is
+      not part of the package. Each client site fetches its own data, from its own source, on its
+      own schedule &mdash; and it would keep doing so if the lab were deleted tomorrow.</p>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="s02">
+  <div class="rail"><span class="num">02</span><span class="tag">The one idea</span></div>
+  <div class="body">
+    <h2>Attributes are not relationships</h2>
+    <p>This is the whole reason the tool exists, and it takes one example to see.</p>
+
+    <p>Three organisations are all in Bensafrim. Recorded as relationships, that is a triangle of
+    three lines &mdash; and with fourteen organisations it becomes a thicket that <em>looks like a
+    finding</em> when it is really an artefact of how the data was typed in. Being in Bensafrim is
+    a fact about each organisation separately. It belongs on the circle, as a colour, not between
+    circles as a line.</p>
+
+    <p>Barlavento has 23 recorded connections. Eighteen of them are facts of that kind &mdash;
+    twelve "is a member of this network", six "is in the same place". Move them onto the circles
+    where they belong and <strong>the honest size of the relationship graph is five.</strong></p>
+
+    <p>Changing that judgement changes nothing in the data. It changes the <em>model</em>, and the
+    same rows are drawn differently. That is what you are doing in the lab.</p>
+  </div>
+</section>
+
+<section class="s" id="s03">
+  <div class="rail"><span class="num">03</span><span class="tag">Three layers</span></div>
+  <div class="body">
+    <h2>Renderer, model, data</h2>
+    <p>Everything in this system is one of three things. Keeping them apart is most of
+    understanding it.</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Layer</th><th>What it is</th><th>Where it lives</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Renderer</strong></td>
+            <td>The app itself &mdash; one file that draws whatever it is given. It contains the
+            words "circle", "role" and "member" nowhere in its code.</td>
+            <td><code>index.html</code>, identical byte for byte everywhere</td>
+          </tr>
+          <tr>
+            <td><strong>Model</strong></td>
+            <td>What kinds of thing may be recorded, which connections are real relationships and
+            which are attributes, how each is drawn. <em>This is what you design in the lab.</em></td>
+            <td><code>schemas/*.json</code>, one per way of reading</td>
+          </tr>
+          <tr>
+            <td><strong>Data</strong></td>
+            <td>The actual organisations and connections.</td>
+            <td>Each client's own source &mdash; never the lab's</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>One dataset can have several models. Vale da Lama has three, Barlavento two. Switching
+    between them in the lab is how you argue about the model with the real data in front of you,
+    which is the point.</p>
+  </div>
+</section>
+
+<section class="s" id="s04">
+  <div class="rail"><span class="num">04</span><span class="tag">Provenance</span></div>
+  <div class="body">
+    <h2>Where every dataset comes from</h2>
+    <p>Five entries appear in the lab's dataset menu. They do not all come from the same kind of
+    place, and two of them are not what their names suggest.</p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>In the menu</th><th>Really comes from</th><th class="num-col">Size</th><th>Live?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Barlavento community</td>
+            <td>Spreadsheet files stored inside the lab</td>
+            <td class="num-col">14 orgs, 23 links</td>
+            <td>frozen copy</td>
+          </tr>
+          <tr>
+            <td>Vale da Lama (Holacracy)</td>
+            <td>Spreadsheet files stored inside the lab</td>
+            <td class="num-col">51 things, 59 links</td>
+            <td>frozen copy</td>
+          </tr>
+          <tr>
+            <td>Vale da Lama &mdash; LIVE</td>
+            <td>Read straight from the published VdL site, which is rebuilt from
+            <strong>Notion</strong> every morning</td>
+            <td class="num-col">51 things, 59 links</td>
+            <td><strong>live</strong></td>
+          </tr>
+          <tr>
+            <td>CoFundEco</td>
+            <td>A one-off export from <strong>Kumu</strong>, stored inside the lab</td>
+            <td class="num-col">25 things, 40 links</td>
+            <td>frozen copy</td>
+          </tr>
+          <tr>
+            <td>Example co-operative</td>
+            <td>Invented sample data &mdash; the template to fork for a new organisation</td>
+            <td class="num-col">8 things, 9 links</td>
+            <td>not real</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note warn">
+      <span class="lbl">Two entries, one organisation</span>
+      <p>"Vale da Lama (Holacracy)" is a <strong>photograph</strong>. "Vale da Lama &mdash; LIVE" is
+      a <strong>window</strong>. They agree today, and nothing tells you when they stop. The names
+      do not warn you, which is a fault of the app rather than of the data.</p>
+    </div>
+
+    <div class="note warn">
+      <span class="lbl">The lab shows you none of this</span>
+      <p>There is no line anywhere on screen saying where the thing you are looking at came from.
+      Everything in the table above had to be read out of configuration files. Until that is fixed,
+      this page is the only place it is written down.</p>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="s05">
+  <div class="rail"><span class="num">05</span><span class="tag">The flow &mdash; read this twice</span></div>
+  <div class="body">
+    <h2>What reaches a client site, and what does not</h2>
+    <p>This is the part that most often gets assumed wrongly, so it is worth stating flatly:</p>
+
+    <div class="note key">
+      <span class="lbl">The rule</span>
+      <p><strong>The app and the models travel from the lab to a client site. The data never
+      does.</strong> Every client feeds itself.</p>
+    </div>
+
+    <figure>
+      <div class="figwrap">
+        <svg viewBox="0 0 760 330" role="img" aria-label="The lab sends the renderer and models to each client site; each client site fetches its own data from its own source.">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+            <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--good)"/>
+            </marker>
+          </defs>
+
+          <!-- lab -->
+          <rect x="14" y="112" width="176" height="86" rx="5" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="102" y="142" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="14" font-weight="600" fill="var(--ink)">OrgMap Lab</text>
+          <text x="102" y="162" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">where models are</text>
+          <text x="102" y="177" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">designed and argued</text>
+
+          <!-- travels arrow -->
+          <line x1="196" y1="155" x2="292" y2="155" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <text x="244" y="141" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--accent)">app +</text>
+          <text x="244" y="153" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--accent)">models</text>
+
+          <!-- client 1 -->
+          <rect x="300" y="36" width="196" height="96" rx="5" fill="var(--surface-2)" stroke="var(--rule-strong)" stroke-width="1.5"/>
+          <text x="398" y="62" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="13" font-weight="600" fill="var(--ink)">barlavento.eco</text>
+          <text x="398" y="81" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">end-user map</text>
+          <text x="398" y="104" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">16 orgs &middot; 13 links</text>
+          <text x="398" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="var(--muted)">its own data</text>
+
+          <!-- client 2 -->
+          <rect x="300" y="178" width="196" height="96" rx="5" fill="var(--surface-2)" stroke="var(--rule-strong)" stroke-width="1.5"/>
+          <text x="398" y="204" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="13" font-weight="600" fill="var(--ink)">Vale da Lama</text>
+          <text x="398" y="223" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">end-user map</text>
+          <text x="398" y="246" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="11" fill="var(--muted)">51 things &middot; 59 links</text>
+          <text x="398" y="262" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="var(--muted)">its own data</text>
+
+          <line x1="292" y1="150" x2="292" y2="84" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="292" y1="84" x2="296" y2="84" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="292" y1="160" x2="292" y2="226" stroke="var(--accent)" stroke-width="1.5"/>
+          <line x1="292" y1="226" x2="296" y2="226" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#ar)"/>
+
+          <!-- sources -->
+          <rect x="580" y="42" width="166" height="60" rx="5" fill="var(--good-soft)" stroke="var(--good)" stroke-width="1.5"/>
+          <text x="663" y="66" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="600" fill="var(--ink)">Murmurations</text>
+          <text x="663" y="84" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="var(--muted)">members self-publish</text>
+
+          <rect x="580" y="184" width="166" height="60" rx="5" fill="var(--good-soft)" stroke="var(--good)" stroke-width="1.5"/>
+          <text x="663" y="208" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="12" font-weight="600" fill="var(--ink)">Notion</text>
+          <text x="663" y="226" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="var(--muted)">governance records</text>
+
+          <line x1="574" y1="72" x2="502" y2="72" stroke="var(--good)" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <line x1="574" y1="214" x2="502" y2="214" stroke="var(--good)" stroke-width="1.5" marker-end="url(#ar2)"/>
+          <text x="538" y="62" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="var(--good)">daily</text>
+          <text x="538" y="204" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="var(--good)">daily</text>
+
+          <text x="102" y="296" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="var(--muted)">frozen sandbox copies</text>
+          <text x="102" y="311" text-anchor="middle" font-family="IBM Plex Sans,sans-serif" font-size="10.5" fill="var(--muted)">of each dataset</text>
+        </svg>
+      </div>
+      <figcaption>Blue travels out of the lab; green arrives at each client independently. Note the
+      Barlavento numbers: <strong>the lab holds 14 organisations and 23 links, the live site
+      publishes 16 and 13.</strong> They are not the same dataset and have not been for some
+      time.</figcaption>
+    </figure>
+
+    <div class="note warn">
+      <span class="lbl">The consequence, stated plainly</span>
+      <p><strong>Editing the Barlavento data inside the lab changes nothing on barlavento.eco.</strong>
+      The lab's copy is a sandbox for testing models against something realistic. To change what the
+      community map says, you change the community's <em>source</em> &mdash; see section 06.</p>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="s06">
+  <div class="rail"><span class="num">06</span><span class="tag">Each client's source</span></div>
+  <div class="body">
+    <h2>How each site feeds itself</h2>
+
+    <h3>Barlavento &mdash; the Murmurations directory, plus a holding list</h3>
+    <p>Every morning the site asks a public directory for every organisation tagged
+    <code>barlavento-eco</code> and rebuilds its map from the answer. <strong>A member who publishes
+    a profile appears on the map without asking anyone's permission</strong> &mdash; the directory is
+    polled, not a maintainer.</p>
+    <p>Organisations that have not published yet are carried in a hand-maintained holding list
+    (<code>curated.json</code>) and marked as recorded <em>about</em> them by somebody else. Every
+    line on the map says which it is. As members publish for themselves, curated rows are replaced
+    and deleted, so <strong>that list is a ledger of unfinished business and the map gets more
+    honest as it empties.</strong></p>
+
+    <h3>Vale da Lama &mdash; Notion</h3>
+    <p>Notion holds the circles, roles and people. Every morning a job reads it, rebuilds the map
+    data and commits the result only if something actually changed &mdash; so the file's history is
+    the organisation's structural audit trail. To change what the map says, change it in Notion; the
+    map catches up within a day.</p>
+
+    <h3>CoFundEco &mdash; nothing yet</h3>
+    <p>A one-off Kumu export sitting in the lab. There is no CoFundEco site and no refresh. If it
+    needs to become a live map, it needs a source first.</p>
+  </div>
+</section>
+
+<section class="s" id="s07">
+  <div class="rail"><span class="num">07</span><span class="tag">Doing the work</span></div>
+  <div class="body">
+    <h2>The four admin jobs</h2>
+
+    <h3>Try a different way of reading the data</h3>
+    <p>Pick a dataset, then switch the model beside it. Nothing is saved anywhere and nothing is
+    published; the map simply redraws. This is the cheapest and most useful thing the lab does, and
+    it is where an argument about the model should happen.</p>
+
+    <h3>Change what the data is allowed to say</h3>
+    <p>Edit a model file in <code>schemas/</code>. Adding a kind of thing, a kind of connection, or
+    an allowed value is a few lines. <strong>Validate</strong> then checks the whole file against it
+    and names every rule it breaks &mdash; a connection pointing at nothing, a person attached
+    directly to a circle where the model says they must hold a role, a value outside the permitted
+    list.</p>
+
+    <h3>Send a model to a client site</h3>
+    <ol class="steps">
+      <li>Change the model in the lab and satisfy yourself with it here.</li>
+      <li>Copy the changed model file into the client's own repository.</li>
+      <li>A check compares the copies and complains if they differ.</li>
+    </ol>
+    <div class="note warn">
+      <span class="lbl">Step 2 is done by hand</span>
+      <p>There is no script that promotes a model from the lab to a client. The comparison check
+      notices divergence <em>after</em> it has happened; it does not move anything. Treat "copy it
+      across" as a real task someone must remember, not an automatic consequence of committing.</p>
+    </div>
+
+    <h3>Stand up a map for a new organisation</h3>
+    <ol class="steps">
+      <li>Put the organisation's things and connections into two spreadsheet files. Things need an
+      id, a name and a kind; connections need a subject, a kind and an object. Anything else you
+      include is kept.</li>
+      <li>Write a model declaring the kinds of thing, the kinds of connection, and which may join
+      which. Copy the example and edit it.</li>
+      <li>Look at the map. Argue. Go back to step 2. <strong>This is the actual work, and it is
+      governance work rather than software work.</strong></li>
+      <li>Write the settings file: title, the single dataset, view mode, and any banner or links.</li>
+      <li>Later, and optionally, write a loader so the data regenerates from wherever the truth
+      already lives. An organisation whose structure changes twice a year never needs this.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="s" id="s08">
+  <div class="rail"><span class="num">08</span><span class="tag">The client's view</span></div>
+  <div class="body">
+    <h2>Seeing what end users see</h2>
+    <p>An end-user map is the same app with the admin controls removed and exactly one organisation
+    loaded. It cannot show the other two, because it was never given them.</p>
+
+    <div class="note warn">
+      <span class="lbl">The obvious way to preview it is misleading</span>
+      <p>Adding <code>?mode=view</code> to the lab's address gives you <em>a</em> reader view &mdash;
+      of the lab. It carries the lab's title, the lab's missing banner, and a Field Guide button the
+      community site does not have. Worse, <strong>the lab opens Barlavento showing 23 lines with
+      Mud Valley Foundation at the centre of everything, while barlavento.eco opens the same data
+      showing 5 lines and no centre</strong>, because each lists its two models in a different
+      order.</p>
+      <p><strong>Today the only faithful preview is opening the real address.</strong></p>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Organisation</th><th>End-user map</th><th>State</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Barlavento</td>
+            <td><a href="https://barlavento-eco.github.io/docs/orgmap/">barlavento-eco.github.io/docs/orgmap/</a></td>
+            <td>correct &mdash; opens as the map alone</td>
+          </tr>
+          <tr>
+            <td>Vale da Lama</td>
+            <td><a href="https://valedalama.github.io/vdl-orgdev/">valedalama.github.io/vdl-orgdev/</a></td>
+            <td><strong>still showing admin controls</strong></td>
+          </tr>
+          <tr>
+            <td>CoFundEco</td>
+            <td>&mdash;</td>
+            <td>no site</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note warn">
+      <span class="lbl">Live as this is written</span>
+      <p>The Vale da Lama site is running an older copy of the app, so <strong>its end users are
+      currently offered the dataset switcher, the model switcher and "Re-derive layout"</strong> —
+      controls meant only for this room. The simplification was built on 13 September and has not
+      reached that site.</p>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="s09">
+  <div class="rail"><span class="num">09</span><span class="tag">Traps</span></div>
+  <div class="body">
+    <h2>Things that have already caught us</h2>
+    <ul>
+      <li><strong>The forgotten library file.</strong> Copying a map into another site means copying
+      five things, and the drawing library is the one everyone forgets. The page then loads looking
+      almost right &mdash; title, banner and menus all appear &mdash; and the canvas is simply empty.
+      Nothing else produces that particular half-working page.</li>
+      <li><strong>A green check does not mean the website is current.</strong> The comparison check
+      reads the repositories, not the published sites. On 1 September the repository was correct,
+      the publish step failed, the check was green, and the site served the old file for hours with
+      nothing announcing it.</li>
+      <li><strong>Turning off the guide link needs the right switch.</strong> A setting that looks
+      like it hides the Field Guide button does nothing on its own; only clearing the guide address
+      removes it. That cost an afternoon.</li>
+      <li><strong>An empty answer looks like a real one.</strong> A failed download and a file full
+      of nothing are easy to confuse. "Could not look" is not "found nothing".</li>
+    </ul>
+  </div>
+</section>
+
+<section class="s" id="s10">
+  <div class="rail"><span class="num">10</span><span class="tag">What is watched</span></div>
+  <div class="body">
+    <h2>What is automatic, and what is not</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Job</th><th>Who does it</th><th>How often</th></tr></thead>
+        <tbody>
+          <tr><td>Rebuild Vale da Lama from Notion</td><td>automatic</td><td>every morning</td></tr>
+          <tr><td>Rebuild Barlavento from the directory</td><td>automatic</td><td>every morning</td></tr>
+          <tr><td>Check the app copies still match</td><td>automatic</td><td>only when that repository is touched</td></tr>
+          <tr><td>Check the <em>published sites</em> match</td><td><strong>nobody yet</strong></td><td>&mdash;</td></tr>
+          <tr><td>Copy a model to a client</td><td><strong>a person</strong></td><td>when remembered</td></tr>
+          <tr><td>Keep this manual true</td><td><strong>a person</strong></td><td>when remembered</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The two bottom rows are the honest weak points, and both are being worked on.</p>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<p class="foot">
+  This manual describes the system as measured on 14 September 2026, against renderer
+  <code>3fb5168a</code>. Where it disagrees with the app, <strong>the app is right and this is
+  stale</strong> &mdash; please say so, because a manual nobody corrects becomes a manual nobody
+  trusts. The separate <a href="field-guide.html">Field Guide</a> covers reading a map; this page
+  covers running one.
+</p>
+
+</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var byId = {};
+  links.forEach(function(a){ byId[a.getAttribute('href').slice(1)] = a; });
+  function mark(id){
+    links.forEach(function(a){ a.removeAttribute('aria-current'); });
+    if (byId[id]) byId[id].setAttribute('aria-current','true');
+  }
+  mark('s01');
+  if (!('IntersectionObserver' in window)) return;
+  var seen = {};
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ seen[e.target.id] = e.isIntersecting; });
+    for (var i=0;i<links.length;i++){
+      var id = links[i].getAttribute('href').slice(1);
+      if (seen[id]) { mark(id); return; }
+    }
+  }, {rootMargin: '-10% 0px -70% 0px'});
+  document.querySelectorAll('section.s').forEach(function(el){ io.observe(el); });
+})();
+</script>
